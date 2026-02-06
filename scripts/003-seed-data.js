@@ -1,5 +1,7 @@
-const { neon } = require("@neondatabase/serverless");
+const { neon, neonConfig } = require("@neondatabase/serverless");
 const crypto = require("crypto");
+
+neonConfig.fetchConnectionCache = true;
 
 function hashPassword(password) {
   const salt = crypto.randomBytes(16).toString("hex");
@@ -11,11 +13,11 @@ async function seed() {
   const sql = neon(process.env.DATABASE_URL);
 
   console.log("Limpando dados antigos...");
+  await sql`DELETE FROM accounts_payable`;
+  await sql`DELETE FROM accounts_receivable`;
   await sql`DELETE FROM order_items`;
   await sql`DELETE FROM orders`;
   await sql`DELETE FROM stock_movements`;
-  await sql`DELETE FROM accounts_payable`;
-  await sql`DELETE FROM accounts_receivable`;
   await sql`DELETE FROM combo_items`;
   await sql`DELETE FROM combos`;
   await sql`DELETE FROM promotion_products`;
@@ -213,14 +215,17 @@ async function seed() {
   const storeCats = {};
   for (let si = 0; si < storeIds.length; si++) {
     storeCats[si] = {};
-    for (const cat of categoryNames) {
-      const rows = await sql`
+    const catPromises = categoryNames.map((cat) =>
+      sql`
         INSERT INTO categories (store_id, name, slug, description)
         VALUES (${storeIds[si]}, ${cat.name}, ${cat.slug}, ${cat.description})
         RETURNING id
-      `;
-      storeCats[si][cat.slug] = rows[0].id;
-    }
+      `
+    );
+    const catResults = await Promise.all(catPromises);
+    categoryNames.forEach((cat, idx) => {
+      storeCats[si][cat.slug] = catResults[idx][0].id;
+    });
   }
   console.log("Categorias criadas para todas as lojas.");
 
@@ -292,23 +297,27 @@ async function seed() {
     { catSlug: "sem-alcool", name: "Budweiser Zero", price: 5.90, originalPrice: null, volume: "350ml", alcohol: "0%", brand: "Budweiser", stock: 70, desc: "Cerveja zero alcool da Budweiser. Leve e refrescante para qualquer momento." },
   ];
 
-  // Insert products for each store with slight price variation
+  // Insert products for each store with slight price variation (batched per store)
   const allStoreProducts = {}; // storeIdx -> array of product ids
   for (let si = 0; si < storeIds.length; si++) {
     allStoreProducts[si] = [];
     const priceMultiplier = 0.95 + (Math.random() * 0.10); // 0.95 to 1.05
-    for (const p of productTemplates) {
+    const productPromises = productTemplates.map((p) => {
       const catId = storeCats[si][p.catSlug];
       const price = Math.round(p.price * priceMultiplier * 100) / 100;
       const origPrice = p.originalPrice ? Math.round(p.originalPrice * priceMultiplier * 100) / 100 : null;
-      const stock = p.stock + Math.floor(Math.random() * 20) - 10; // +/- 10 variance
-      const rows = await sql`
+      const stock = p.stock + Math.floor(Math.random() * 20) - 10;
+      return sql`
         INSERT INTO products (store_id, category_id, name, slug, description, price, original_price, stock_quantity, min_stock, volume, alcohol_content, brand, is_active)
         VALUES (${storeIds[si]}, ${catId}, ${p.name}, ${p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/,'')}, ${p.desc}, ${price}, ${origPrice}, ${Math.max(stock, 0)}, 5, ${p.volume}, ${p.alcohol}, ${p.brand}, true)
         RETURNING id
       `;
+    });
+    const results = await Promise.all(productPromises);
+    for (const rows of results) {
       allStoreProducts[si].push(rows[0].id);
     }
+    if ((si + 1) % 10 === 0) console.log(`  Produtos: ${si + 1}/${storeIds.length} lojas...`);
   }
   console.log(`Criados ${productTemplates.length} produtos x ${storeIds.length} lojas = ${productTemplates.length * storeIds.length} registros.`);
 
@@ -317,12 +326,13 @@ async function seed() {
   // ============================================================
   console.log("Registrando movimentacoes de estoque...");
   for (let si = 0; si < storeIds.length; si++) {
-    for (let pi = 0; pi < allStoreProducts[si].length; pi++) {
-      await sql`
+    const stockPromises = allStoreProducts[si].map((prodId, pi) =>
+      sql`
         INSERT INTO stock_movements (product_id, store_id, type, quantity, reason)
-        VALUES (${allStoreProducts[si][pi]}, ${storeIds[si]}, 'in', ${productTemplates[pi].stock}, 'Estoque inicial')
-      `;
-    }
+        VALUES (${prodId}, ${storeIds[si]}, 'in', ${productTemplates[pi].stock}, 'Estoque inicial')
+      `
+    );
+    await Promise.all(stockPromises);
   }
 
   // ============================================================
@@ -371,7 +381,7 @@ async function seed() {
   // ============================================================
   console.log("Criando cupons...");
   for (let si = 0; si < storeIds.length; si++) {
-    const prefix = storeConfigs[si].slug.split("-").pop().toUpperCase().slice(0, 5);
+    const prefix = storeConfigs[si].slug.split("-").pop().toUpperCase().slice(0, 4) + (si + 1);
     await sql`
       INSERT INTO coupons (store_id, code, description, discount_type, discount_value, min_purchase, max_uses, start_date, end_date, is_active)
       VALUES (${storeIds[si]}, ${prefix + '10OFF'}, 'Cupom de 10% de desconto', 'percentage', 10, 50, 100, NOW(), NOW() + INTERVAL '60 days', true)

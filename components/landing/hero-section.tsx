@@ -13,7 +13,7 @@ export function HeroSection() {
           fill
           className="object-cover object-center"
           priority
-          quality={90}
+          quality={75}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/70 to-background" />
         <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/50 to-background/90" />

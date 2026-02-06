@@ -29,8 +29,9 @@ async function seed() {
   await sql`DELETE FROM users`;
 
   // ============================================================
-  // USUARIOS - 10 donos de adega + 5 clientes
+  // USUARIOS - 44 donos de adega + 5 clientes
   // Senha padrao: "123456" | PIN padrao: "1234"
+  // Cidades: SJC(10), Cacapava(5), Taubate(15), Tremembe(5), Pindamonhangaba(9)
   // ============================================================
   console.log("Criando usuarios...");
   const pwHash = hashPassword("123456");
@@ -38,16 +39,55 @@ async function seed() {
 
   const owners = [];
   const ownerData = [
-    { name: "Carlos Mendes", email: "carlos@adega1.com", phone: "(11) 99100-0001", city: "Sao Paulo", state: "SP", cep: "01001-000", street: "Rua Augusta", number: "1200", neighborhood: "Consolacao" },
-    { name: "Fernanda Oliveira", email: "fernanda@adega2.com", phone: "(21) 99200-0002", city: "Rio de Janeiro", state: "RJ", cep: "20040-020", street: "Rua do Ouvidor", number: "50", neighborhood: "Centro" },
-    { name: "Roberto Silva", email: "roberto@adega3.com", phone: "(31) 99300-0003", city: "Belo Horizonte", state: "MG", cep: "30130-000", street: "Av. Afonso Pena", number: "300", neighborhood: "Centro" },
-    { name: "Ana Beatriz Costa", email: "ana@adega4.com", phone: "(41) 99400-0004", city: "Curitiba", state: "PR", cep: "80020-000", street: "Rua XV de Novembro", number: "800", neighborhood: "Centro" },
-    { name: "Marcos Pereira", email: "marcos@adega5.com", phone: "(51) 99500-0005", city: "Porto Alegre", state: "RS", cep: "90010-000", street: "Rua dos Andradas", number: "1500", neighborhood: "Centro Historico" },
-    { name: "Juliana Santos", email: "juliana@adega6.com", phone: "(71) 99600-0006", city: "Salvador", state: "BA", cep: "40020-000", street: "Av. Sete de Setembro", number: "200", neighborhood: "Pelourinho" },
-    { name: "Pedro Almeida", email: "pedro@adega7.com", phone: "(48) 99700-0007", city: "Florianopolis", state: "SC", cep: "88010-000", street: "Rua Felipe Schmidt", number: "100", neighborhood: "Centro" },
-    { name: "Lucia Ferreira", email: "lucia@adega8.com", phone: "(62) 99800-0008", city: "Goiania", state: "GO", cep: "74005-000", street: "Av. Goias", number: "900", neighborhood: "Centro" },
-    { name: "Ricardo Nunes", email: "ricardo@adega9.com", phone: "(85) 99900-0009", city: "Fortaleza", state: "CE", cep: "60060-000", street: "Rua Barao do Rio Branco", number: "400", neighborhood: "Centro" },
-    { name: "Marina Rodrigues", email: "marina@adega10.com", phone: "(81) 99000-0010", city: "Recife", state: "PE", cep: "50030-000", street: "Rua da Aurora", number: "600", neighborhood: "Boa Vista" },
+    // --- Sao Jose dos Campos (10) ---
+    { name: "Carlos Mendes", email: "carlos@adega1.com", phone: "(12) 99100-0001", city: "Sao Jose dos Campos", state: "SP", cep: "12210-000", street: "Av. Dr. Nelson D'Avila", number: "120", neighborhood: "Centro" },
+    { name: "Fernanda Oliveira", email: "fernanda@adega2.com", phone: "(12) 99100-0002", city: "Sao Jose dos Campos", state: "SP", cep: "12243-000", street: "Rua Euclides Miragaia", number: "450", neighborhood: "Jardim Aquarius" },
+    { name: "Roberto Silva", email: "roberto@adega3.com", phone: "(12) 99100-0003", city: "Sao Jose dos Campos", state: "SP", cep: "12220-000", street: "Av. Nove de Julho", number: "88", neighborhood: "Vila Adyana" },
+    { name: "Ana Beatriz Costa", email: "ana@adega4.com", phone: "(12) 99100-0004", city: "Sao Jose dos Campos", state: "SP", cep: "12230-000", street: "Rua Rubiao Junior", number: "200", neighborhood: "Vila Ema" },
+    { name: "Marcos Pereira", email: "marcos@adega5.com", phone: "(12) 99100-0005", city: "Sao Jose dos Campos", state: "SP", cep: "12245-000", street: "Av. Cassiano Ricardo", number: "601", neighborhood: "Jardim Aquarius" },
+    { name: "Juliana Santos", email: "juliana@adega6.com", phone: "(12) 99100-0006", city: "Sao Jose dos Campos", state: "SP", cep: "12216-000", street: "Rua Vilaça", number: "320", neighborhood: "Centro" },
+    { name: "Pedro Almeida", email: "pedro@adega7.com", phone: "(12) 99100-0007", city: "Sao Jose dos Campos", state: "SP", cep: "12235-000", street: "Av. Andrômeda", number: "750", neighborhood: "Jardim Satelite" },
+    { name: "Lucia Ferreira", email: "lucia@adega8.com", phone: "(12) 99100-0008", city: "Sao Jose dos Campos", state: "SP", cep: "12233-000", street: "Rua Paraibuna", number: "180", neighborhood: "Jardim Paulista" },
+    { name: "Ricardo Nunes", email: "ricardo@adega9.com", phone: "(12) 99100-0009", city: "Sao Jose dos Campos", state: "SP", cep: "12211-000", street: "Rua XV de Novembro", number: "55", neighborhood: "Centro" },
+    { name: "Marina Rodrigues", email: "marina@adega10.com", phone: "(12) 99100-0010", city: "Sao Jose dos Campos", state: "SP", cep: "12242-000", street: "Av. Sao Joao", number: "1400", neighborhood: "Jardim das Industrias" },
+    // --- Cacapava (5) ---
+    { name: "Antonio Barbosa", email: "antonio@adega11.com", phone: "(12) 99200-0011", city: "Cacapava", state: "SP", cep: "12281-000", street: "Rua Cel. Alfredo Guedes", number: "100", neighborhood: "Centro" },
+    { name: "Patricia Gomes", email: "patricia@adega12.com", phone: "(12) 99200-0012", city: "Cacapava", state: "SP", cep: "12282-000", street: "Av. Brasil", number: "350", neighborhood: "Jardim Italia" },
+    { name: "Eduardo Martins", email: "eduardo@adega13.com", phone: "(12) 99200-0013", city: "Cacapava", state: "SP", cep: "12283-000", street: "Rua Sao Jose", number: "220", neighborhood: "Vila Sao Jose" },
+    { name: "Renata Souza", email: "renata@adega14.com", phone: "(12) 99200-0014", city: "Cacapava", state: "SP", cep: "12284-000", street: "Rua Voluntarios da Patria", number: "88", neighborhood: "Centro" },
+    { name: "Fabio Carvalho", email: "fabio@adega15.com", phone: "(12) 99200-0015", city: "Cacapava", state: "SP", cep: "12285-000", street: "Rua Major Novaes", number: "450", neighborhood: "Jardim Paraiso" },
+    // --- Taubate (15) ---
+    { name: "Gustavo Lima", email: "gustavo@adega16.com", phone: "(12) 99300-0016", city: "Taubate", state: "SP", cep: "12010-000", street: "Rua Jacques Felix", number: "300", neighborhood: "Centro" },
+    { name: "Claudia Ribeiro", email: "claudia@adega17.com", phone: "(12) 99300-0017", city: "Taubate", state: "SP", cep: "12020-000", street: "Av. Charles Schnneider", number: "600", neighborhood: "Vila Costa" },
+    { name: "Rafael Teixeira", email: "rafael@adega18.com", phone: "(12) 99300-0018", city: "Taubate", state: "SP", cep: "12030-000", street: "Rua Visconde do Rio Branco", number: "150", neighborhood: "Centro" },
+    { name: "Simone Dias", email: "simone@adega19.com", phone: "(12) 99300-0019", city: "Taubate", state: "SP", cep: "12040-000", street: "Av. Independencia", number: "800", neighborhood: "Independencia" },
+    { name: "Leandro Moreira", email: "leandro@adega20.com", phone: "(12) 99300-0020", city: "Taubate", state: "SP", cep: "12050-000", street: "Rua Dr. Souza Alves", number: "250", neighborhood: "Centro" },
+    { name: "Vanessa Pinto", email: "vanessa@adega21.com", phone: "(12) 99300-0021", city: "Taubate", state: "SP", cep: "12060-000", street: "Av. Nove de Julho", number: "1200", neighborhood: "Vila Aparecida" },
+    { name: "Thiago Rocha", email: "thiago@adega22.com", phone: "(12) 99300-0022", city: "Taubate", state: "SP", cep: "12070-000", street: "Rua Conselheiro Moreira de Barros", number: "500", neighborhood: "Centro" },
+    { name: "Amanda Freitas", email: "amanda@adega23.com", phone: "(12) 99300-0023", city: "Taubate", state: "SP", cep: "12080-000", street: "Rua Baronesa de Itapetininga", number: "380", neighborhood: "Jardim das Nacoes" },
+    { name: "Bruno Azevedo", email: "bruno@adega24.com", phone: "(12) 99300-0024", city: "Taubate", state: "SP", cep: "12090-000", street: "Av. Granadeiro Guimaraes", number: "900", neighborhood: "Quiririm" },
+    { name: "Daniela Campos", email: "daniela@adega25.com", phone: "(12) 99300-0025", city: "Taubate", state: "SP", cep: "12011-000", street: "Praca Santa Terezinha", number: "15", neighborhood: "Centro" },
+    { name: "Henrique Lopes", email: "henrique@adega26.com", phone: "(12) 99300-0026", city: "Taubate", state: "SP", cep: "12012-000", street: "Rua Sao Bento", number: "430", neighborhood: "Sao Bento" },
+    { name: "Isabella Monteiro", email: "isabella@adega27.com", phone: "(12) 99300-0027", city: "Taubate", state: "SP", cep: "12013-000", street: "Av. do Povo", number: "1800", neighborhood: "Estiva" },
+    { name: "Rodrigo Nascimento", email: "rodrigo@adega28.com", phone: "(12) 99300-0028", city: "Taubate", state: "SP", cep: "12014-000", street: "Rua Marechal Deodoro", number: "275", neighborhood: "Centro" },
+    { name: "Larissa Cunha", email: "larissa@adega29.com", phone: "(12) 99300-0029", city: "Taubate", state: "SP", cep: "12015-000", street: "Rua Padre Faria", number: "650", neighborhood: "Vila Sao Jose" },
+    { name: "Felipe Araujo", email: "felipe@adega30.com", phone: "(12) 99300-0030", city: "Taubate", state: "SP", cep: "12016-000", street: "Rua Professor Augusto Guedes", number: "100", neighborhood: "Parque Urup" },
+    // --- Tremembe (5) ---
+    { name: "Marcelo Vieira", email: "marcelo@adega31.com", phone: "(12) 99400-0031", city: "Tremembe", state: "SP", cep: "12120-000", street: "Rua Cel. Jose Benedito", number: "200", neighborhood: "Centro" },
+    { name: "Tatiana Correia", email: "tatiana@adega32.com", phone: "(12) 99400-0032", city: "Tremembe", state: "SP", cep: "12121-000", street: "Av. Prefeito Niels Kristensen", number: "500", neighborhood: "Vila Sao Geraldo" },
+    { name: "Wagner Fonseca", email: "wagner@adega33.com", phone: "(12) 99400-0033", city: "Tremembe", state: "SP", cep: "12122-000", street: "Rua Capitao Jose Marcondes", number: "85", neighborhood: "Centro" },
+    { name: "Elaine Cardoso", email: "elaine@adega34.com", phone: "(12) 99400-0034", city: "Tremembe", state: "SP", cep: "12123-000", street: "Rua Santo Antonio", number: "340", neighborhood: "Vila Santo Antonio" },
+    { name: "Diego Menezes", email: "diego@adega35.com", phone: "(12) 99400-0035", city: "Tremembe", state: "SP", cep: "12124-000", street: "Rua Benedito Jose de Camargo", number: "150", neighborhood: "Jardim America" },
+    // --- Pindamonhangaba (9) ---
+    { name: "Adriana Batista", email: "adriana@adega36.com", phone: "(12) 99500-0036", city: "Pindamonhangaba", state: "SP", cep: "12400-000", street: "Rua Maj. Jose dos Santos Moreira", number: "230", neighborhood: "Centro" },
+    { name: "Sergio Ramos", email: "sergio@adega37.com", phone: "(12) 99500-0037", city: "Pindamonhangaba", state: "SP", cep: "12401-000", street: "Av. Nossa Senhora do Bom Sucesso", number: "800", neighborhood: "Bom Sucesso" },
+    { name: "Monica Castro", email: "monica@adega38.com", phone: "(12) 99500-0038", city: "Pindamonhangaba", state: "SP", cep: "12402-000", street: "Rua Dr. Lucio Malta", number: "110", neighborhood: "Centro" },
+    { name: "Alexandre Moura", email: "alexandre@adega39.com", phone: "(12) 99500-0039", city: "Pindamonhangaba", state: "SP", cep: "12403-000", street: "Av. Deputado Cunha Bueno", number: "1500", neighborhood: "Bosque da Princesa" },
+    { name: "Priscila Nogueira", email: "priscila@adega40.com", phone: "(12) 99500-0040", city: "Pindamonhangaba", state: "SP", cep: "12404-000", street: "Rua Monsenhor Jose", number: "320", neighborhood: "Centro" },
+    { name: "Vinicius Barros", email: "vinicius@adega41.com", phone: "(12) 99500-0041", city: "Pindamonhangaba", state: "SP", cep: "12405-000", street: "Rua Cel. Moreira Cesar", number: "60", neighborhood: "Mombaça" },
+    { name: "Camila Andrade", email: "camila.a@adega42.com", phone: "(12) 99500-0042", city: "Pindamonhangaba", state: "SP", cep: "12406-000", street: "Av. Trabalhadores", number: "950", neighborhood: "Araretama" },
+    { name: "Leonardo Guimaraes", email: "leonardo@adega43.com", phone: "(12) 99500-0043", city: "Pindamonhangaba", state: "SP", cep: "12407-000", street: "Rua Saldanha Marinho", number: "180", neighborhood: "Centro" },
+    { name: "Fernanda Lima", email: "fernanda.l@adega44.com", phone: "(12) 99500-0044", city: "Pindamonhangaba", state: "SP", cep: "12408-000", street: "Rua Padre Anchieta", number: "400", neighborhood: "Santa Clara" },
   ];
 
   for (const o of ownerData) {
@@ -61,11 +101,11 @@ async function seed() {
 
   const customers = [];
   const customerData = [
-    { name: "Joao da Silva", email: "joao@email.com", phone: "(11) 98100-1111", city: "Sao Paulo", state: "SP", cep: "04001-000", street: "Rua Vergueiro", number: "500", neighborhood: "Liberdade" },
-    { name: "Maria Souza", email: "maria@email.com", phone: "(21) 98200-2222", city: "Rio de Janeiro", state: "RJ", cep: "22041-080", street: "Rua Barata Ribeiro", number: "200", neighborhood: "Copacabana" },
-    { name: "Paulo Costa", email: "paulo@email.com", phone: "(31) 98300-3333", city: "Belo Horizonte", state: "MG", cep: "30140-000", street: "Rua da Bahia", number: "1000", neighborhood: "Centro" },
-    { name: "Camila Lima", email: "camila@email.com", phone: "(41) 98400-4444", city: "Curitiba", state: "PR", cep: "80060-000", street: "Rua Marechal Deodoro", number: "300", neighborhood: "Centro" },
-    { name: "Lucas Martins", email: "lucas@email.com", phone: "(51) 98500-5555", city: "Porto Alegre", state: "RS", cep: "90030-000", street: "Rua Riachuelo", number: "700", neighborhood: "Centro Historico" },
+    { name: "Joao da Silva", email: "joao@email.com", phone: "(12) 98100-1111", city: "Sao Jose dos Campos", state: "SP", cep: "12210-100", street: "Rua Paraibuna", number: "500", neighborhood: "Jardim Paulista" },
+    { name: "Maria Souza", email: "maria@email.com", phone: "(12) 98200-2222", city: "Taubate", state: "SP", cep: "12020-100", street: "Rua Visconde do Rio Branco", number: "200", neighborhood: "Centro" },
+    { name: "Paulo Costa", email: "paulo@email.com", phone: "(12) 98300-3333", city: "Pindamonhangaba", state: "SP", cep: "12400-100", street: "Rua Dr. Lucio Malta", number: "80", neighborhood: "Centro" },
+    { name: "Camila Lima", email: "camila@email.com", phone: "(12) 98400-4444", city: "Cacapava", state: "SP", cep: "12281-100", street: "Rua Cel. Alfredo Guedes", number: "300", neighborhood: "Centro" },
+    { name: "Lucas Martins", email: "lucas@email.com", phone: "(12) 98500-5555", city: "Tremembe", state: "SP", cep: "12120-100", street: "Rua Cel. Jose Benedito", number: "70", neighborhood: "Centro" },
   ];
 
   for (const c of customerData) {
@@ -79,20 +119,60 @@ async function seed() {
   console.log(`Criados ${owners.length} donos e ${customers.length} clientes.`);
 
   // ============================================================
-  // LOJAS (ADEGAS) - 10 adegas
+  // LOJAS (ADEGAS) - 44 adegas no Vale do Paraiba
+  // SJC(10), Cacapava(5), Taubate(15), Tremembe(5), Pindamonhangaba(9)
   // ============================================================
   console.log("Criando adegas...");
   const storeConfigs = [
-    { ownIdx: 0, name: "Adega do Carlos", slug: "adega-do-carlos", description: "A melhor selecao de vinhos nacionais e importados de Sao Paulo. Mais de 20 anos de experiencia no mercado de bebidas premium." },
-    { ownIdx: 1, name: "Adega Carioca", slug: "adega-carioca", description: "Cervejas artesanais e destilados premium no coracao do Rio de Janeiro. Entrega rapida para toda a cidade." },
-    { ownIdx: 2, name: "Adega Mineira", slug: "adega-mineira", description: "Cachacas artesanais, vinhos e cervejas especiais direto de Minas Gerais. Tradacao e qualidade em cada garrafa." },
-    { ownIdx: 3, name: "Adega Paranaense", slug: "adega-paranaense", description: "Especialistas em vinhos do sul do Brasil e importados europeus. Curadoria especial para cada paladar." },
-    { ownIdx: 4, name: "Adega Gaucha", slug: "adega-gaucha", description: "Os melhores vinhos da Serra Gaucha e cervejas artesanais do Rio Grande do Sul. Qualidade que o gaucho merece." },
-    { ownIdx: 5, name: "Adega Baiana", slug: "adega-baiana", description: "Bebidas tropicais, licores artesanais e cervejas geladas em Salvador. O sabor da Bahia na sua casa." },
-    { ownIdx: 6, name: "Adega Catarinense", slug: "adega-catarinense", description: "Cervejas artesanais de Floripa e vinhos selecionados de Santa Catarina. A ilha da magia em cada gole." },
-    { ownIdx: 7, name: "Adega Goiana", slug: "adega-goiana", description: "Destilados, cervejas e vinhos para o paladar goiano. Precos justos e entrega rapida em Goiania." },
-    { ownIdx: 8, name: "Adega Nordeste", slug: "adega-nordeste", description: "Cachacas premiadas, cervejas geladas e drinks do Ceara. O melhor da bebida nordestina." },
-    { ownIdx: 9, name: "Adega Recife", slug: "adega-recife", description: "Vinhos, espumantes e cervejas especiais em Recife. Celebre os bons momentos com a gente." },
+    // --- Sao Jose dos Campos (10) ---
+    { ownIdx: 0, name: "Adega do Carlos", slug: "adega-do-carlos", description: "A melhor selecao de vinhos nacionais e importados em Sao Jose dos Campos. Mais de 20 anos de experiencia no mercado de bebidas premium." },
+    { ownIdx: 1, name: "Adega Aquarius", slug: "adega-aquarius", description: "Cervejas artesanais e destilados premium no Jardim Aquarius. Entrega rapida para toda SJC." },
+    { ownIdx: 2, name: "Adega Villa", slug: "adega-villa", description: "Vinhos importados e nacionais na Vila Adyana. Curadoria especial para paladares exigentes." },
+    { ownIdx: 3, name: "Emporio das Bebidas SJC", slug: "emporio-bebidas-sjc", description: "Destilados finos, cervejas especiais e vinhos selecionados. O melhor da Vila Ema." },
+    { ownIdx: 4, name: "Adega Cassiano", slug: "adega-cassiano", description: "Localizada na Av. Cassiano Ricardo, oferecemos as melhores bebidas com entrega rapida." },
+    { ownIdx: 5, name: "Bebidas Express SJC", slug: "bebidas-express-sjc", description: "Entrega rapida de cervejas, vinhos e destilados no centro de Sao Jose dos Campos." },
+    { ownIdx: 6, name: "Adega Satelite", slug: "adega-satelite", description: "A adega do Jardim Satelite. Precos acessiveis e variedade para todos os gostos." },
+    { ownIdx: 7, name: "Adega Premium SJC", slug: "adega-premium-sjc", description: "Vinhos premium, whiskies single malt e cervejas importadas. Sofisticacao em cada garrafa." },
+    { ownIdx: 8, name: "Adega XV", slug: "adega-xv", description: "Tradicao no centro de SJC. Cachacas artesanais, vinhos e cervejas desde 2005." },
+    { ownIdx: 9, name: "Adega das Industrias", slug: "adega-das-industrias", description: "Bebidas para o dia a dia e para ocasioes especiais no Jardim das Industrias." },
+    // --- Cacapava (5) ---
+    { ownIdx: 10, name: "Adega Cacapava", slug: "adega-cacapava", description: "A principal adega de Cacapava. Vinhos, cervejas artesanais e destilados com o melhor preco da regiao." },
+    { ownIdx: 11, name: "Emporio Italia Cacapava", slug: "emporio-italia-cacapava", description: "Vinhos italianos, cervejas importadas e destilados premium no Jardim Italia." },
+    { ownIdx: 12, name: "Bebidas Sao Jose", slug: "bebidas-sao-jose", description: "Cervejas geladas, vinhos acessiveis e destilados na Vila Sao Jose. Entrega rapida." },
+    { ownIdx: 13, name: "Adega Central Cacapava", slug: "adega-central-cacapava", description: "No centro de Cacapava, oferecemos a melhor selecao de bebidas para sua festa." },
+    { ownIdx: 14, name: "Adega Paraiso", slug: "adega-paraiso", description: "Vinhos, cervejas e destilados no Jardim Paraiso. Qualidade e bom atendimento." },
+    // --- Taubate (15) ---
+    { ownIdx: 15, name: "Adega Jacques Felix", slug: "adega-jacques-felix", description: "Na rua mais famosa de Taubate, oferecemos vinhos premiados e cervejas artesanais de todo o Brasil." },
+    { ownIdx: 16, name: "Adega Vila Costa", slug: "adega-vila-costa", description: "Cervejas artesanais e importadas na Vila Costa. Entrega rapida em toda Taubate." },
+    { ownIdx: 17, name: "Emporio do Vinho Taubate", slug: "emporio-vinho-taubate", description: "Especialistas em vinhos no centro de Taubate. Mais de 200 rotulos disponiveis." },
+    { ownIdx: 18, name: "Adega Independencia", slug: "adega-independencia", description: "Bebidas premium e destilados finos na Av. Independencia. Tradacao e qualidade." },
+    { ownIdx: 19, name: "Bebidas Express Taubate", slug: "bebidas-express-taubate", description: "Entrega rapida de bebidas em Taubate. Cervejas geladas na sua porta em minutos." },
+    { ownIdx: 20, name: "Adega Aparecida", slug: "adega-aparecida", description: "Na Vila Aparecida, oferecemos vinhos, cervejas e destilados com precos justos." },
+    { ownIdx: 21, name: "Adega Moreira de Barros", slug: "adega-moreira-barros", description: "Destilados premium e whiskies importados no centro historico de Taubate." },
+    { ownIdx: 22, name: "Adega das Nacoes", slug: "adega-das-nacoes", description: "Bebidas de todo o mundo no Jardim das Nacoes. Vinhos, cervejas e licores importados." },
+    { ownIdx: 23, name: "Adega Quiririm", slug: "adega-quiririm", description: "No bairro italiano de Taubate, oferecemos vinhos e grappas artesanais. Tradacao italiana." },
+    { ownIdx: 24, name: "Emporio Santa Terezinha", slug: "emporio-santa-terezinha", description: "Vinhos, espumantes e cervejas artesanais na Praca Santa Terezinha. Charm e qualidade." },
+    { ownIdx: 25, name: "Adega Sao Bento", slug: "adega-sao-bento", description: "Cachacas artesanais, cervejas especiais e vinhos no bairro Sao Bento de Taubate." },
+    { ownIdx: 26, name: "Adega Estiva", slug: "adega-estiva", description: "Bebidas para churrascos e festas na Estiva. Precos populares e entrega gratis." },
+    { ownIdx: 27, name: "Adega Imperial Taubate", slug: "adega-imperial-taubate", description: "A adega mais completa de Taubate. Vinhos, cervejas artesanais, whiskies e mais." },
+    { ownIdx: 28, name: "Adega Padre Faria", slug: "adega-padre-faria", description: "Cervejas geladas e bebidas para o dia a dia na Vila Sao Jose. Atendimento amigo." },
+    { ownIdx: 29, name: "Adega Urup", slug: "adega-urup", description: "Vinhos e cervejas artesanais no Parque Urup. Degustacao todo sabado." },
+    // --- Tremembe (5) ---
+    { ownIdx: 30, name: "Adega Tremembe", slug: "adega-tremembe", description: "A adega do centro de Tremembe. Vinhos, cervejas e destilados com otimos precos." },
+    { ownIdx: 31, name: "Emporio Sao Geraldo", slug: "emporio-sao-geraldo", description: "Bebidas selecionadas na Vila Sao Geraldo. Cervejas artesanais e vinhos importados." },
+    { ownIdx: 32, name: "Adega do Vale Tremembe", slug: "adega-vale-tremembe", description: "No coracao de Tremembe, a melhor selecao de bebidas do Vale do Paraiba." },
+    { ownIdx: 33, name: "Bebidas Santo Antonio", slug: "bebidas-santo-antonio", description: "Cachacas artesanais, cervejas e vinhos na Vila Santo Antonio de Tremembe." },
+    { ownIdx: 34, name: "Adega America Tremembe", slug: "adega-america-tremembe", description: "Cervejas importadas, vinhos e destilados no Jardim America. Entrega para toda Tremembe." },
+    // --- Pindamonhangaba (9) ---
+    { ownIdx: 35, name: "Adega Pinda", slug: "adega-pinda", description: "A maior adega de Pindamonhangaba. Vinhos, cervejas artesanais e destilados premium." },
+    { ownIdx: 36, name: "Adega Bom Sucesso", slug: "adega-bom-sucesso", description: "Bebidas de qualidade no bairro Bom Sucesso. Entrega rapida em toda Pinda." },
+    { ownIdx: 37, name: "Emporio Central Pinda", slug: "emporio-central-pinda", description: "Vinhos importados e nacionais no centro de Pindamonhangaba. Curadoria especial." },
+    { ownIdx: 38, name: "Adega Bosque da Princesa", slug: "adega-bosque-princesa", description: "Cervejas artesanais e drinks prontos no Bosque da Princesa. Ambiente aconchegante." },
+    { ownIdx: 39, name: "Bebidas Express Pinda", slug: "bebidas-express-pinda", description: "Entrega rapida de bebidas geladas em Pindamonhangaba. Cervejas, vinhos e mais." },
+    { ownIdx: 40, name: "Adega Mombaca", slug: "adega-mombaca", description: "Destilados finos e cervejas importadas no bairro Mombaca. Qualidade garantida." },
+    { ownIdx: 41, name: "Adega Araretama", slug: "adega-araretama", description: "Vinhos, espumantes e cervejas no Araretama. A adega da familia pindamonhangabense." },
+    { ownIdx: 42, name: "Emporio do Vinho Pinda", slug: "emporio-vinho-pinda", description: "Mais de 150 rotulos de vinhos nacionais e importados. A referencia em vinhos de Pinda." },
+    { ownIdx: 43, name: "Adega Santa Clara", slug: "adega-santa-clara", description: "Bebidas artesanais e importadas no bairro Santa Clara. Tradacao e qualidade." },
   ];
 
   const storeIds = [];
@@ -408,15 +488,15 @@ async function seed() {
   console.log("\n=== SEED COMPLETO ===");
   console.log(`${owners.length} donos de adega (senha: 123456, pin: 1234)`);
   console.log(`${customers.length} clientes (senha: 123456, pin: 1234)`);
-  console.log(`${storeIds.length} adegas`);
+  console.log(`${storeIds.length} adegas (SJC:10, Cacapava:5, Taubate:15, Tremembe:5, Pinda:9)`);
   console.log(`${categoryNames.length} categorias por loja`);
   console.log(`${productTemplates.length} produtos por loja (${productTemplates.length * storeIds.length} total)`);
-  console.log(`20 promocoes (2 por loja)`);
-  console.log(`10 combos (1 por loja)`);
-  console.log(`20 cupons (2 por loja)`);
-  console.log(`30 pedidos (3 por loja)`);
-  console.log(`30 contas a pagar (3 por loja)`);
-  console.log(`30 contas a receber (3 por loja)`);
+  console.log(`${storeIds.length * 2} promocoes (2 por loja)`);
+  console.log(`${storeIds.length} combos (1 por loja)`);
+  console.log(`${storeIds.length * 2} cupons (2 por loja)`);
+  console.log(`${storeIds.length * 3} pedidos (3 por loja)`);
+  console.log(`${storeIds.length * 3} contas a pagar (3 por loja)`);
+  console.log(`${storeIds.length * 3} contas a receber (3 por loja)`);
   console.log(`${blogs.length} artigos do blog`);
 }
 

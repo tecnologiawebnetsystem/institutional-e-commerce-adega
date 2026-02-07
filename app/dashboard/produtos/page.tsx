@@ -3,7 +3,7 @@
 import React from "react"
 
 import { useState } from "react";
-import { Loader2, Plus, Package, X } from "lucide-react";
+import { Loader2, Plus, Package, X, Barcode } from "lucide-react";
 import { toast } from "sonner";
 import useSWR, { mutate } from "swr";
 
@@ -25,6 +25,7 @@ export default function ProdutosPage() {
     volume: "",
     alcohol_content: "",
     brand: "",
+    barcode: "",
     image_url_1: "",
     image_url_2: "",
   });
@@ -33,7 +34,7 @@ export default function ProdutosPage() {
     setForm({
       name: "", description: "", price: "", original_price: "",
       category_id: "", stock_quantity: "0", min_stock: "5",
-      volume: "", alcohol_content: "", brand: "", image_url_1: "", image_url_2: "",
+      volume: "", alcohol_content: "", brand: "", barcode: "", image_url_1: "", image_url_2: "",
     });
   }
 
@@ -55,6 +56,7 @@ export default function ProdutosPage() {
           stock_quantity: parseInt(form.stock_quantity) || 0,
           min_stock: parseInt(form.min_stock) || 5,
           category_id: form.category_id || null,
+          barcode: form.barcode || null,
         }),
       });
       if (res.ok) {
@@ -109,7 +111,7 @@ export default function ProdutosPage() {
         <form onSubmit={handleSubmit} className="mt-6 rounded-xl border border-border bg-card p-6">
           <h2 className="mb-4 text-lg font-semibold text-foreground">Novo Produto</h2>
           <div className="flex flex-col gap-4">
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-3">
               <div>
                 <label htmlFor="p-name" className="mb-1.5 block text-sm font-medium text-foreground">Nome *</label>
                 <input id="p-name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputClass} placeholder="Vinho Tinto Reserva" />
@@ -117,6 +119,13 @@ export default function ProdutosPage() {
               <div>
                 <label htmlFor="p-brand" className="mb-1.5 block text-sm font-medium text-foreground">Marca</label>
                 <input id="p-brand" value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} className={inputClass} placeholder="Casillero del Diablo" />
+              </div>
+              <div>
+                <label htmlFor="p-barcode" className="mb-1.5 block text-sm font-medium text-foreground">Codigo de Barras (EAN)</label>
+                <div className="relative">
+                  <Barcode className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <input id="p-barcode" value={form.barcode} onChange={(e) => setForm({ ...form, barcode: e.target.value.replace(/\D/g, "") })} className={`${inputClass} pl-10`} placeholder="7890000000000" maxLength={13} />
+                </div>
               </div>
             </div>
 
@@ -195,6 +204,7 @@ export default function ProdutosPage() {
                 <thead>
                   <tr className="border-b border-border">
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">Produto</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Codigo de Barras</th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">Categoria</th>
                     <th className="px-4 py-3 text-right font-medium text-muted-foreground">Preco</th>
                     <th className="px-4 py-3 text-right font-medium text-muted-foreground">Estoque</th>
@@ -202,12 +212,13 @@ export default function ProdutosPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((p: { id: string; name: string; category_name: string; price: number; stock_quantity: number; min_stock: number; is_active: boolean; brand: string }) => (
+                  {products.map((p: { id: string; name: string; category_name: string; price: number; stock_quantity: number; min_stock: number; is_active: boolean; brand: string; barcode: string }) => (
                     <tr key={p.id} className="border-b border-border last:border-0">
                       <td className="px-4 py-3">
                         <p className="font-medium text-foreground">{p.name}</p>
                         {p.brand && <p className="text-xs text-muted-foreground">{p.brand}</p>}
                       </td>
+                      <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{p.barcode || "-"}</td>
                       <td className="px-4 py-3 text-muted-foreground">{p.category_name || "-"}</td>
                       <td className="px-4 py-3 text-right font-medium text-foreground">
                         R$ {Number(p.price).toFixed(2)}

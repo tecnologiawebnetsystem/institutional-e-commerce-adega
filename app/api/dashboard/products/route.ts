@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     if (!store) return NextResponse.json({ error: "Loja nao encontrada" }, { status: 404 });
 
     const body = await request.json();
-    const { name, description, price, original_price, category_id, stock_quantity, min_stock, volume, alcohol_content, brand, image_url_1, image_url_2 } = body;
+    const { name, description, price, original_price, category_id, stock_quantity, min_stock, volume, alcohol_content, brand, barcode, image_url_1, image_url_2 } = body;
 
     if (!name || !price) {
       return NextResponse.json({ error: "Nome e preco obrigatorios" }, { status: 400 });
@@ -45,8 +45,8 @@ export async function POST(request: NextRequest) {
     const sql = getDb();
 
     const products = await sql`
-      INSERT INTO products (store_id, category_id, name, slug, description, price, original_price, stock_quantity, min_stock, volume, alcohol_content, brand, image_url_1, image_url_2)
-      VALUES (${store.id}, ${category_id || null}, ${name}, ${slug}, ${description || null}, ${price}, ${original_price || null}, ${stock_quantity || 0}, ${min_stock || 5}, ${volume || null}, ${alcohol_content || null}, ${brand || null}, ${image_url_1 || null}, ${image_url_2 || null})
+      INSERT INTO products (store_id, category_id, name, slug, description, price, original_price, stock_quantity, min_stock, volume, alcohol_content, brand, barcode, image_url_1, image_url_2)
+      VALUES (${store.id}, ${category_id || null}, ${name}, ${slug}, ${description || null}, ${price}, ${original_price || null}, ${stock_quantity || 0}, ${min_stock || 5}, ${volume || null}, ${alcohol_content || null}, ${brand || null}, ${barcode || null}, ${image_url_1 || null}, ${image_url_2 || null})
       RETURNING *
     `;
 

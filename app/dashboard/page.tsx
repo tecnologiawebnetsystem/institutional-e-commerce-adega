@@ -2,7 +2,7 @@ import { getSession, getUserStore } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Package, ShoppingBag, DollarSign, AlertTriangle, Store } from "lucide-react";
+import { Package, ShoppingBag, DollarSign, AlertTriangle, Store, ReceiptText, Globe } from "lucide-react";
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -30,19 +30,25 @@ export default async function DashboardPage() {
 
   const sql = getDb();
 
-  const [productsCount, ordersCount, lowStockCount, revenue] = await Promise.all([
+  const [productsCount, ordersCount, lowStockCount, revenue, posOrders, posRevenue, onlineOrders, onlineRevenue] = await Promise.all([
     sql`SELECT COUNT(*) as count FROM products WHERE store_id = ${store.id}`,
     sql`SELECT COUNT(*) as count FROM orders WHERE store_id = ${store.id}`,
     sql`SELECT COUNT(*) as count FROM products WHERE store_id = ${store.id} AND stock_quantity <= min_stock AND is_active = true`,
     sql`SELECT COALESCE(SUM(total), 0) as total FROM orders WHERE store_id = ${store.id} AND status != 'cancelled'`,
+    sql`SELECT COUNT(*) as count FROM orders WHERE store_id = ${store.id} AND channel = 'pos'`,
+    sql`SELECT COALESCE(SUM(total), 0) as total FROM orders WHERE store_id = ${store.id} AND channel = 'pos' AND status != 'cancelled'`,
+    sql`SELECT COUNT(*) as count FROM orders WHERE store_id = ${store.id} AND (channel = 'online' OR channel IS NULL)`,
+    sql`SELECT COALESCE(SUM(total), 0) as total FROM orders WHERE store_id = ${store.id} AND (channel = 'online' OR channel IS NULL) AND status != 'cancelled'`,
   ]);
 
   const stats = [
     { label: "Produtos", value: productsCount[0].count, icon: Package, href: "/dashboard/produtos" },
-    { label: "Pedidos", value: ordersCount[0].count, icon: ShoppingBag, href: "/dashboard/pedidos" },
+    { label: "Total Pedidos", value: ordersCount[0].count, icon: ShoppingBag, href: "/dashboard/pedidos" },
+    { label: "Vendas PDV", value: `${posOrders[0].count} (R$ ${Number(posRevenue[0].total).toLocaleString("pt-BR", { minimumFractionDigits: 2 })})`, icon: ReceiptText, href: "/dashboard/pdv" },
+    { label: "Vendas Online", value: `${onlineOrders[0].count} (R$ ${Number(onlineRevenue[0].total).toLocaleString("pt-BR", { minimumFractionDigits: 2 })})`, icon: Globe, href: "/dashboard/pedidos" },
     { label: "Estoque Baixo", value: lowStockCount[0].count, icon: AlertTriangle, href: "/dashboard/estoque" },
     {
-      label: "Faturamento",
+      label: "Faturamento Total",
       value: `R$ ${Number(revenue[0].total).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
       icon: DollarSign,
       href: "/dashboard/financeiro",
@@ -50,7 +56,7 @@ export default async function DashboardPage() {
   ];
 
   const recentOrders = await sql`
-    SELECT o.*, u.name as customer_name 
+    SELECT o.*, COALESCE(o.channel, 'online') as channel, u.name as customer_name 
     FROM orders o 
     JOIN users u ON o.customer_id = u.id 
     WHERE o.store_id = ${store.id} 
@@ -63,7 +69,7 @@ export default async function DashboardPage() {
       <h1 className="text-2xl font-bold text-foreground">Painel - {store.name}</h1>
       <p className="mt-1 text-muted-foreground">Visao geral da sua adega</p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((stat) => (
           <Link
             key={stat.label}
@@ -95,6 +101,7 @@ export default async function DashboardPage() {
                 <thead>
                   <tr className="border-b border-border">
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">Pedido</th>
+                    <th className="px-4 py-3 text-center font-medium text-muted-foreground">Canal</th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">Cliente</th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
                     <th className="px-4 py-3 text-right font-medium text-muted-foreground">Total</th>
@@ -104,6 +111,11 @@ export default async function DashboardPage() {
                   {recentOrders.map((order) => (
                     <tr key={order.id} className="border-b border-border last:border-0">
                       <td className="px-4 py-3 font-mono text-xs text-foreground">{order.order_number}</td>
+                      <td className="px-4 py-3 text-center">
+                        <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${order.channel === 'pos' ? 'bg-primary/10 text-primary' : 'bg-blue-900/20 text-blue-400'}`}>
+                          {order.channel === 'pos' ? 'PDV' : 'Online'}
+                        </span>
+                      </td>
                       <td className="px-4 py-3 text-foreground">{order.customer_name}</td>
                       <td className="px-4 py-3">
                         <span className="rounded-md bg-secondary px-2 py-1 text-xs text-secondary-foreground">

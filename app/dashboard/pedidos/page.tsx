@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, ShoppingBag } from "lucide-react";
+import { Loader2, ShoppingBag, ReceiptText, Globe } from "lucide-react";
 import { toast } from "sonner";
 import useSWR, { mutate } from "swr";
 
@@ -70,6 +70,7 @@ export default function PedidosPage() {
                 <thead>
                   <tr className="border-b border-border">
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">Pedido</th>
+                    <th className="px-4 py-3 text-center font-medium text-muted-foreground">Canal</th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">Cliente</th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">Data</th>
                     <th className="px-4 py-3 text-right font-medium text-muted-foreground">Total</th>
@@ -78,9 +79,22 @@ export default function PedidosPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.map((o: { id: string; order_number: string; customer_name: string; customer_email: string; total: number; status: string; created_at: string }) => (
+                  {orders.map((o: { id: string; order_number: string; customer_name: string; customer_email: string; total: number; status: string; created_at: string; channel: string }) => (
                     <tr key={o.id} className="border-b border-border last:border-0">
                       <td className="px-4 py-3 font-mono text-xs text-foreground">{o.order_number}</td>
+                      <td className="px-4 py-3 text-center">
+                        {o.channel === "pos" ? (
+                          <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                            <ReceiptText className="h-3 w-3" />
+                            PDV
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-md bg-blue-900/20 px-2 py-1 text-xs font-medium text-blue-400">
+                            <Globe className="h-3 w-3" />
+                            Online
+                          </span>
+                        )}
+                      </td>
                       <td className="px-4 py-3">
                         <p className="font-medium text-foreground">{o.customer_name}</p>
                         <p className="text-xs text-muted-foreground">{o.customer_email}</p>

@@ -11,7 +11,7 @@ export async function GET() {
 
     const sql = getDb();
     const orders = await sql`
-      SELECT o.*, u.name as customer_name, u.email as customer_email
+      SELECT o.*, COALESCE(o.channel, 'online') as channel, u.name as customer_name, u.email as customer_email
       FROM orders o
       JOIN users u ON o.customer_id = u.id
       WHERE o.store_id = ${store.id}

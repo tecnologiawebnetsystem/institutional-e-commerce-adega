@@ -88,7 +88,7 @@ export async function POST(request: Request) {
   if (!store) return NextResponse.json({ error: "Loja nao encontrada" }, { status: 404 });
 
   const body = await request.json();
-  const { items, paymentMethod, customerName, customerCpf, discount, cashRegisterId, cashReceived, splitPayments } = body;
+  const { items, paymentMethod, customerName, customerCpf, customerPhone, discount, cashRegisterId, cashReceived, splitPayments, notes: saleNotes } = body;
 
   if (!items || items.length === 0) {
     return NextResponse.json({ error: "Nenhum item na venda" }, { status: 400 });
@@ -142,11 +142,13 @@ export async function POST(request: Request) {
   const noteParts = [`Pagamento: ${paymentMethod}`];
   if (customerName) noteParts.push(`Cliente: ${customerName}`);
   if (customerCpf) noteParts.push(`CPF: ${customerCpf}`);
+  if (customerPhone) noteParts.push(`Tel: ${customerPhone}`);
   if (changeAmount > 0) noteParts.push(`Troco: R$ ${changeAmount.toFixed(2)}`);
   if (cashReceived) noteParts.push(`Recebido: R$ ${Number(cashReceived).toFixed(2)}`);
   if (splitPayments && splitPayments.length > 0) {
     noteParts.push(`Pagamentos: ${splitPayments.map((sp: { method: string; amount: string }) => `${sp.method} R$ ${Number(sp.amount).toFixed(2)}`).join(", ")}`);
   }
+  if (saleNotes) noteParts.push(`Obs: ${saleNotes}`);
   noteParts.push(`Itens: ${items.length}`);
 
   // Create order with new fields

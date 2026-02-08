@@ -67,14 +67,26 @@ export async function PUT(request: NextRequest) {
     if (!store) return NextResponse.json({ error: "Loja nao encontrada" }, { status: 404 });
 
     const body = await request.json();
-    const { id, name, description, price, original_price, cost_price, category_id, stock_quantity, min_stock, volume, alcohol_content, brand, barcode, ncm, supplier, packaging, origin_country, origin_region, grape_type, vintage, serving_temp, weight_grams, image_url_1, image_url_2 } = body;
+    const { id, name, description, price, original_price, cost_price, category_id, stock_quantity, min_stock, volume, alcohol_content, brand, barcode, ncm, supplier, packaging, origin_country, origin_region, grape_type, vintage, serving_temp, weight_grams, image_url_1, image_url_2, toggleActive } = body;
 
     if (!id || !name || !price) {
       return NextResponse.json({ error: "ID, nome e preco obrigatorios" }, { status: 400 });
     }
 
-    const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-");
     const sql = getDb();
+
+    // Quick toggle active/inactive
+    if (toggleActive !== undefined) {
+      const products = await sql`
+        UPDATE products SET is_active = ${toggleActive}, updated_at = NOW()
+        WHERE id = ${id} AND store_id = ${store.id}
+        RETURNING *
+      `;
+      if (products.length === 0) return NextResponse.json({ error: "Produto nao encontrado" }, { status: 404 });
+      return NextResponse.json({ product: products[0] });
+    }
+
+    const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-");
 
     const products = await sql`
       UPDATE products SET

@@ -12,9 +12,12 @@ export async function GET() {
 
   const sales = await sql`
     SELECT
+      o.id as order_id,
       o.order_number,
       o.total,
+      o.status,
       o.notes,
+      o.payment_method,
       o.created_at,
       (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id = o.id) as items_count
     FROM orders o
@@ -24,22 +27,31 @@ export async function GET() {
     ORDER BY o.created_at DESC
   `;
 
-  // Extract payment_method and customer_name from notes
   const formattedSales = sales.map((s: Record<string, string | number>) => {
     const notes = (s.notes as string) || "";
-    const payMatch = notes.match(/Pagamento: (\w+)/);
+    // Use payment_method column first, fallback to extracting from notes
+    let payMethod = s.payment_method as string;
+    if (!payMethod || payMethod === "") {
+      const payMatch = notes.match(/Pagamento: (\w+)/);
+      payMethod = payMatch ? payMatch[1] : "-";
+    }
     const custMatch = notes.match(/Cliente: ([^|]+)/);
     return {
+      order_id: s.order_id,
       order_number: s.order_number,
       total: s.total,
-      payment_method: payMatch ? payMatch[1] : "-",
+      status: s.status,
+      payment_method: payMethod,
       customer_name: custMatch ? custMatch[1].trim() : "",
       created_at: s.created_at,
       items_count: Number(s.items_count),
     };
   });
 
-  const totalDay = sales.reduce((sum: number, s: Record<string, number>) => sum + Number(s.total), 0);
+  // Total only includes non-cancelled sales
+  const totalDay = formattedSales
+    .filter((s: { status: string }) => s.status !== "cancelled")
+    .reduce((sum: number, s: { total: number }) => sum + Number(s.total), 0);
 
   return NextResponse.json({ sales: formattedSales, total: totalDay });
 }

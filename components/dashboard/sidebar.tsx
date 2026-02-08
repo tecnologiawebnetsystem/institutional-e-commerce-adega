@@ -17,11 +17,13 @@ import {
   Menu,
   X,
   ReceiptText,
+  MessageCircle,
 } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "Painel", icon: LayoutDashboard },
   { href: "/dashboard/pdv", label: "PDV / Caixa", icon: ReceiptText },
+  { href: "/dashboard/chat", label: "Mensagens", icon: MessageCircle },
   { href: "/dashboard/loja", label: "Minha Loja", icon: Store },
   { href: "/dashboard/produtos", label: "Produtos", icon: Package },
   { href: "/dashboard/categorias", label: "Categorias", icon: Layers },

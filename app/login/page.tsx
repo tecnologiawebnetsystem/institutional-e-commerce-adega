@@ -36,6 +36,8 @@ export default function LoginPage() {
       toast.success("Login realizado com sucesso!");
       if (data.user.role === "owner") {
         router.push("/dashboard");
+      } else if (data.user.role === "motoboy") {
+        router.push("/motoboy");
       } else {
         router.push("/adegas");
       }

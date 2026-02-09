@@ -70,7 +70,9 @@ export default function QuemSomosPage() {
                 </p>
                 <p>
                   Nosso proposito e simples: conectar adegas aos seus clientes de forma rapida, segura e
-                  inteligente, impulsionando o comercio local com tecnologia de ponta.
+                  inteligente, impulsionando o comercio local com tecnologia de ponta. E o melhor:{" "}
+                  <strong className="text-primary">a plataforma e 100% gratuita</strong> -- sem taxas de
+                  administracao, sem planos mensais, sem comissao sobre vendas.
                 </p>
               </div>
             </div>
@@ -230,7 +232,7 @@ export default function QuemSomosPage() {
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground text-balance">
             Nossa mais recente inovacao: uma plataforma completa de gestao, marketplace e delivery para adegas
-            de todo o Brasil.
+            de todo o Brasil. <strong className="text-primary">100% gratuita, sem nenhuma taxa.</strong>
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link

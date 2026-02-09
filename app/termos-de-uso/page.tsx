@@ -131,11 +131,26 @@ export default function TermosDeUsoPage() {
 
         {/* 9 */}
         <section>
-          <h2 className="mb-3 text-xl font-semibold text-foreground">9. Pagamentos e Cancelamentos</h2>
+          <h2 className="mb-3 text-xl font-semibold text-foreground">9. Gratuidade da Plataforma</h2>
+          <p>
+            A utilizacao da plataforma AdegaExpress e <strong className="text-foreground">100% gratuita</strong> para
+            todos os perfis de usuario (clientes, donos de adega e motoboys). Nao cobramos taxa de
+            administracao, mensalidade, planos pagos, comissao sobre vendas ou qualquer outro tipo de
+            tarifa pelo uso da plataforma. Os unicos custos envolvidos nas transacoes sao os relativos
+            ao proprio produto adquirido e eventual taxa de entrega, negociados diretamente entre as
+            partes. A AdegaExpress reserva-se o direito de alterar esta politica de gratuidade mediante
+            aviso previo de 90 dias aos usuarios cadastrados.
+          </p>
+        </section>
+
+        {/* 10 */}
+        <section>
+          <h2 className="mb-3 text-xl font-semibold text-foreground">10. Pagamentos e Cancelamentos</h2>
           <ul className="list-inside list-disc space-y-2 pl-2">
             <li>
               Os pagamentos sao processados diretamente entre cliente e adega, podendo utilizar
-              dinheiro, cartao de debito/credito ou PIX.
+              dinheiro, cartao de debito/credito ou PIX. A AdegaExpress nao cobra nenhuma taxa,
+              comissao ou porcentagem sobre as vendas realizadas na plataforma.
             </li>
             <li>
               Cancelamentos devem ser solicitados antes do envio do pedido. Apos o envio, fica
@@ -148,9 +163,9 @@ export default function TermosDeUsoPage() {
           </ul>
         </section>
 
-        {/* 10 */}
+        {/* 11 */}
         <section>
-          <h2 className="mb-3 text-xl font-semibold text-foreground">10. Propriedade Intelectual</h2>
+          <h2 className="mb-3 text-xl font-semibold text-foreground">11. Propriedade Intelectual</h2>
           <p>
             Todo o conteudo da plataforma -- incluindo marca, logotipo, layout, textos, codigo-fonte
             e funcionalidades -- e de propriedade exclusiva da AdegaExpress ou de seus
@@ -159,9 +174,9 @@ export default function TermosDeUsoPage() {
           </p>
         </section>
 
-        {/* 11 */}
+        {/* 12 */}
         <section>
-          <h2 className="mb-3 text-xl font-semibold text-foreground">11. Limitacao de Responsabilidade</h2>
+          <h2 className="mb-3 text-xl font-semibold text-foreground">12. Limitacao de Responsabilidade</h2>
           <p>
             A AdegaExpress atua como intermediaria, conectando adegas, clientes e motoboys. Nao nos
             responsabilizamos por: qualidade dos produtos vendidos pelas adegas, atrasos na entrega
@@ -170,9 +185,9 @@ export default function TermosDeUsoPage() {
           </p>
         </section>
 
-        {/* 12 */}
+        {/* 13 */}
         <section>
-          <h2 className="mb-3 text-xl font-semibold text-foreground">12. Alteracoes nos Termos</h2>
+          <h2 className="mb-3 text-xl font-semibold text-foreground">13. Alteracoes nos Termos</h2>
           <p>
             A AdegaExpress reserva-se o direito de modificar estes Termos de Uso a qualquer
             momento, mediante publicacao da versao atualizada nesta pagina. Recomendamos a revisao
@@ -180,9 +195,9 @@ export default function TermosDeUsoPage() {
           </p>
         </section>
 
-        {/* 13 */}
+        {/* 14 */}
         <section>
-          <h2 className="mb-3 text-xl font-semibold text-foreground">13. Legislacao Aplicavel</h2>
+          <h2 className="mb-3 text-xl font-semibold text-foreground">14. Legislacao Aplicavel</h2>
           <p>
             Estes Termos de Uso sao regidos pelas leis da Republica Federativa do Brasil. Qualquer
             disputa sera resolvida no foro da Comarca de Sao Paulo, Estado de Sao Paulo, com
@@ -190,9 +205,9 @@ export default function TermosDeUsoPage() {
           </p>
         </section>
 
-        {/* 14 */}
+        {/* 15 */}
         <section>
-          <h2 className="mb-3 text-xl font-semibold text-foreground">14. Contato</h2>
+          <h2 className="mb-3 text-xl font-semibold text-foreground">15. Contato</h2>
           <p>
             Em caso de duvidas sobre estes Termos de Uso, entre em contato pelo e-mail{" "}
             <a href="mailto:contato@adegaexpress.com.br" className="text-primary hover:underline">

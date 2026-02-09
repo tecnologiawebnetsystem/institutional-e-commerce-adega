@@ -41,7 +41,8 @@ export function HeroSection() {
           {/* Subtitle */}
           <p className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 mx-auto mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground lg:mt-8 lg:text-xl">
             Gerencie produtos, estoque, promocoes e vendas. Tudo em uma unica
-            plataforma intuitiva e poderosa para sua adega vender online.
+            plataforma intuitiva e poderosa para sua adega vender online.{" "}
+            <strong className="text-primary">100% gratuito, sem taxas e sem planos pagos.</strong>
           </p>
 
           {/* CTAs */}
@@ -65,10 +66,10 @@ export function HeroSection() {
           {/* Stats row */}
           <div className="animate-in fade-in slide-in-from-bottom-12 duration-700 delay-500 mt-16 grid grid-cols-2 gap-6 sm:grid-cols-4 lg:mt-20 lg:gap-12">
             {[
+              { value: "R$ 0", label: "Sem taxa de administracao" },
               { value: "500+", label: "Adegas ativas" },
-              { value: "10k+", label: "Produtos cadastrados" },
               { value: "50k+", label: "Pedidos realizados" },
-              { value: "98%", label: "Satisfacao" },
+              { value: "100%", label: "Gratuito para sempre" },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
                 <div className="text-2xl font-bold text-foreground lg:text-3xl">{stat.value}</div>

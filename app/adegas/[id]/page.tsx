@@ -7,6 +7,7 @@ import useSWR from "swr";
 import { useCart } from "@/lib/cart-context";
 import { useState } from "react";
 import Link from "next/link";
+import { ChatWrapper } from "@/components/chat/chat-wrapper";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -50,6 +51,7 @@ export default function StoreDetailPage() {
   }
 
   return (
+    <>
     <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
       {/* Store header */}
       <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6 sm:flex-row sm:items-center">
@@ -191,5 +193,7 @@ export default function StoreDetailPage() {
         )}
       </div>
     </div>
+    <ChatWrapper storeId={store.id} storeName={store.name} />
+    </>
   );
 }

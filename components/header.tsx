@@ -15,6 +15,7 @@ import {
   ClipboardList,
   UserCog,
   LogOut,
+  MessageCircle,
 } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 
@@ -155,6 +156,14 @@ export function Header({ user }: HeaderProps) {
                                 Meus Pedidos
                               </Link>
                               <Link
+                                href="/mensagens"
+                                onClick={() => setUserMenuOpen(false)}
+                                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-secondary"
+                              >
+                                <MessageCircle className="h-4 w-4 text-muted-foreground" />
+                                Mensagens
+                              </Link>
+                              <Link
                                 href="/perfil"
                                 onClick={() => setUserMenuOpen(false)}
                                 className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-secondary"
@@ -271,6 +280,14 @@ export function Header({ user }: HeaderProps) {
                         >
                           <ClipboardList className="h-5 w-5" />
                           Meus Pedidos
+                        </Link>
+                        <Link
+                          href="/mensagens"
+                          onClick={() => setMobileOpen(false)}
+                          className="flex h-12 items-center gap-3 rounded-lg px-3 text-base font-medium text-muted-foreground hover:bg-secondary"
+                        >
+                          <MessageCircle className="h-5 w-5" />
+                          Mensagens
                         </Link>
                         <Link
                           href="/perfil"

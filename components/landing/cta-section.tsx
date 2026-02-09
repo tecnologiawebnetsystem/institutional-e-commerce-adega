@@ -41,7 +41,8 @@ export function CtaSection() {
             </h2>
             <p className="mx-auto mt-6 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
               Cadastre-se agora e comece a vender online de forma simples e
-              eficiente. E 100% gratis para sua adega.
+              eficiente. A plataforma e <strong className="text-primary">100% gratuita para sempre</strong> --
+              sem taxa de administracao, sem planos mensais, sem cobrancas ocultas.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link

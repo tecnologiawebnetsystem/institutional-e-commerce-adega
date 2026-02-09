@@ -60,7 +60,8 @@ export function FeaturesSection() {
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
             Ferramentas essenciais para gerenciar sua adega de forma simples e
-            eficiente, sem complicacao.
+            eficiente.{" "}
+            <strong className="text-primary">Tudo 100% gratuito -- sem taxas, sem planos, sem surpresas.</strong>
           </p>
         </div>
 

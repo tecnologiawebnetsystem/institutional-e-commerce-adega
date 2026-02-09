@@ -33,7 +33,10 @@ export default function PoliticaDePrivacidadePage() {
         {/* 2 */}
         <section>
           <h2 className="mb-3 text-xl font-semibold text-foreground">2. Dados que Coletamos</h2>
-          <p className="mb-3">Coletamos diferentes dados conforme o perfil do usuario:</p>
+          <p className="mb-3">
+            A plataforma AdegaExpress e 100% gratuita para todos os usuarios -- nao cobramos taxas,
+            planos ou comissoes. Coletamos diferentes dados conforme o perfil do usuario:
+          </p>
 
           <div className="space-y-4">
             <div className="rounded-lg border border-border bg-card/50 p-4">

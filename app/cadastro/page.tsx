@@ -187,8 +187,8 @@ export default function CadastroPage() {
             <Wine className="h-7 w-7" />
             <span>Adega<span className="italic">Express</span></span>
           </Link>
-          <h1 className="text-2xl font-bold text-foreground">Criar sua conta</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Escolha seu perfil e preencha os dados</p>
+ <h1 className="text-2xl font-bold text-foreground">Criar sua conta</h1>
+  <p className="mt-1 text-sm text-muted-foreground">100% gratuito -- sem taxas, sem planos, sem cobrancas</p>
         </div>
 
         {/* Role Selection */}

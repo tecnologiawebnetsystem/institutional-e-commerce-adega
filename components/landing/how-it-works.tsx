@@ -5,7 +5,7 @@ const steps = [
     icon: UserPlus,
     step: "01",
     title: "Crie sua conta",
-    description: "Cadastre-se gratuitamente em menos de 2 minutos com seus dados basicos.",
+    description: "Cadastre-se 100% gratis em menos de 2 minutos. Sem taxas, sem planos pagos, sem cartao de credito.",
   },
   {
     icon: Store,

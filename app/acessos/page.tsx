@@ -250,6 +250,96 @@ export default function AcessosPage() {
             ))}
           </div>
 
+          {/* Credentials info */}
+          <div className="mt-8 w-full rounded-xl border border-border bg-card p-6">
+            <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-foreground">
+              <ShieldCheck className="h-5 w-5 text-amber-400" />
+              Credenciais de Demonstracao
+            </h2>
+            <p className="mb-4 text-xs text-muted-foreground">
+              Todos os usuarios usam <strong className="text-foreground">Senha: 123456</strong> e <strong className="text-foreground">PIN: 1234</strong>
+            </p>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {/* PDV */}
+              <div className="rounded-lg border border-violet-500/20 bg-violet-500/5 p-4">
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-violet-400">
+                  <Monitor className="h-4 w-4" />
+                  PDV / Caixa
+                </h3>
+                <p className="text-xs text-muted-foreground">Email + PIN (4 digitos)</p>
+                <div className="mt-2 space-y-1 text-xs">
+                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
+                    <span className="text-muted-foreground">carlos@adega1.com</span>
+                    <span className="font-mono text-violet-400">PIN: 1234</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
+                    <span className="text-muted-foreground">fernanda@adega2.com</span>
+                    <span className="font-mono text-violet-400">PIN: 1234</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Owner */}
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-primary">
+                  <Store className="h-4 w-4" />
+                  Dono de Adega
+                </h3>
+                <p className="text-xs text-muted-foreground">Email + Senha + PIN</p>
+                <div className="mt-2 space-y-1 text-xs">
+                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
+                    <span className="text-muted-foreground">carlos@adega1.com</span>
+                    <span className="font-mono text-primary">123456</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
+                    <span className="text-muted-foreground">fernanda@adega2.com</span>
+                    <span className="font-mono text-primary">123456</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
+                    <span className="text-muted-foreground">roberto@adega3.com</span>
+                    <span className="font-mono text-primary">123456</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Customer */}
+              <div className="rounded-lg border border-blue-500/20 bg-blue-500/5 p-4">
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-blue-400">
+                  <User className="h-4 w-4" />
+                  Cliente
+                </h3>
+                <p className="text-xs text-muted-foreground">Email + Senha + PIN</p>
+                <div className="mt-2 space-y-1 text-xs">
+                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
+                    <span className="text-muted-foreground">joao@email.com</span>
+                    <span className="font-mono text-blue-400">123456</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
+                    <span className="text-muted-foreground">maria@email.com</span>
+                    <span className="font-mono text-blue-400">123456</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
+                    <span className="text-muted-foreground">camila@email.com</span>
+                    <span className="font-mono text-blue-400">123456</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Motoboy */}
+              <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-4">
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-emerald-400">
+                  <Bike className="h-4 w-4" />
+                  Motoboy
+                </h3>
+                <p className="text-xs text-muted-foreground">Cadastre um motoboy para testar</p>
+                <div className="mt-2 rounded bg-background/50 px-2 py-2 text-xs text-muted-foreground">
+                  Nenhum motoboy cadastrado ainda. <Link href="/cadastro" className="font-medium text-emerald-400 hover:underline">Cadastre aqui</Link> selecionando o perfil &quot;Motoboy&quot;.
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="mt-8 text-center">
             <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
               <ArrowLeft className="h-4 w-4" />

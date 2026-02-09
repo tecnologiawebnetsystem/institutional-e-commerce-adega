@@ -51,6 +51,7 @@ export default function CadastroPage() {
   const [cnh, setCnh] = useState("");
   const [vehicleType, setVehicleType] = useState("moto");
   const [vehiclePlate, setVehiclePlate] = useState("");
+  const [motoboyMode, setMotoboyMode] = useState("freelancer");
 
   function maskPhone(v: string) {
     const d = v.replace(/\D/g, "").slice(0, 11);
@@ -146,6 +147,7 @@ export default function CadastroPage() {
         body.cnh = cnh;
         body.vehicleType = vehicleType;
         body.vehiclePlate = vehiclePlate;
+        body.motoboyMode = motoboyMode;
       }
 
       const res = await fetch("/api/auth/register", {
@@ -164,7 +166,7 @@ export default function CadastroPage() {
       if (data.user.role === "owner") {
         router.push("/dashboard");
       } else if (data.user.role === "motoboy") {
-        router.push("/login?registered=1");
+        router.push("/motoboy");
       } else {
         router.push("/adegas");
       }
@@ -321,6 +323,16 @@ export default function CadastroPage() {
                     <label htmlFor="vehiclePlate" className="mb-1.5 block text-sm font-medium text-foreground">Placa *</label>
                     <input id="vehiclePlate" value={vehiclePlate} onChange={(e) => setVehiclePlate(maskPlate(e.target.value))} className={`${inputClass} uppercase`} placeholder="ABC1D23" required />
                   </div>
+                </div>
+                <div>
+                  <label htmlFor="motoboyMode" className="mb-1.5 block text-sm font-medium text-foreground">Modo de Trabalho *</label>
+                  <select id="motoboyMode" value={motoboyMode} onChange={(e) => setMotoboyMode(e.target.value)} className={inputClass}>
+                    <option value="freelancer">Freelancer - Disponivel para todas as adegas</option>
+                    <option value="linked">Vinculado - Trabalhar com adega especifica</option>
+                  </select>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {motoboyMode === "freelancer" ? "Voce recebera pedidos de qualquer adega na plataforma." : "Voce trabalhara exclusivamente para adegas vinculadas. Pode alterar depois no perfil."}
+                  </p>
                 </div>
               </div>
             </fieldset>

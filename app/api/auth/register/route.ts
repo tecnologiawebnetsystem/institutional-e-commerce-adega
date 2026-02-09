@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       // Owner fields
       cnpj, storeName, storeDescription,
       // Motoboy fields
-      cnh, vehicleType, vehiclePlate,
+      cnh, vehicleType, vehiclePlate, motoboyMode,
     } = body;
 
     if (!name || !email || !password || !pin) {
@@ -56,14 +56,15 @@ export async function POST(request: NextRequest) {
       INSERT INTO users (
         name, email, password_hash, pin_hash, role, phone,
         cep, street, number, complement, neighborhood, city, state,
-        cpf, cnpj, cnh, vehicle_type, vehicle_plate
+        cpf, cnpj, cnh, vehicle_type, vehicle_plate, motoboy_mode
       )
       VALUES (
         ${name}, ${email}, ${passwordHash}, ${pinHash}, ${userRole}, ${phone || null},
         ${cep || null}, ${street || null}, ${number || null}, ${complement || null},
         ${neighborhood || null}, ${city || null}, ${state || null},
         ${cpf || null}, ${cnpj || null}, ${cnh || null},
-        ${vehicleType || null}, ${vehiclePlate || null}
+        ${vehicleType || null}, ${vehiclePlate || null},
+        ${userRole === "motoboy" ? (motoboyMode || "freelancer") : null}
       )
       RETURNING id, name, email, role
     `;

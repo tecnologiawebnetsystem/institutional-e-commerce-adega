@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   Menu,
@@ -32,6 +32,9 @@ export function Header({ user }: HeaderProps) {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { itemCount } = useCart();
   const router = useRouter();
+  const pathname = usePathname();
+  const isOnLogin = pathname === "/login";
+  const isOnCadastro = pathname === "/cadastro";
 
   const navLinks = [
     { href: "/", label: "Inicio" },
@@ -195,19 +198,23 @@ export function Header({ user }: HeaderProps) {
               </>
             ) : (
               <>
-                <Link
-                  href="/login"
-                  className="flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                >
-                  <LogIn className="h-4 w-4" />
-                  Entrar
-                </Link>
-                <Link
-                  href="/cadastro"
-                  className="flex h-10 items-center rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground shadow-sm shadow-primary/20 transition-all hover:shadow-md hover:shadow-primary/30 hover:brightness-110"
-                >
-                  Cadastrar
-                </Link>
+                {!isOnLogin && (
+                  <Link
+                    href="/login"
+                    className="flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                  >
+                    <LogIn className="h-4 w-4" />
+                    Entrar
+                  </Link>
+                )}
+                {!isOnCadastro && (
+                  <Link
+                    href="/cadastro"
+                    className="flex h-10 items-center rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground shadow-sm shadow-primary/20 transition-all hover:shadow-md hover:shadow-primary/30 hover:brightness-110"
+                  >
+                    Cadastrar
+                  </Link>
+                )}
               </>
             )}
           </div>
@@ -313,20 +320,24 @@ export function Header({ user }: HeaderProps) {
                   </>
                 ) : (
                   <>
-                    <Link
-                      href="/login"
-                      onClick={() => setMobileOpen(false)}
-                      className="flex h-12 items-center justify-center rounded-xl border border-border text-base font-medium text-foreground hover:bg-secondary"
-                    >
-                      Entrar
-                    </Link>
-                    <Link
-                      href="/cadastro"
-                      onClick={() => setMobileOpen(false)}
-                      className="flex h-12 items-center justify-center rounded-xl bg-primary text-base font-semibold text-primary-foreground shadow-sm shadow-primary/20"
-                    >
-                      Cadastrar
-                    </Link>
+                    {!isOnLogin && (
+                      <Link
+                        href="/login"
+                        onClick={() => setMobileOpen(false)}
+                        className="flex h-12 items-center justify-center rounded-xl border border-border text-base font-medium text-foreground hover:bg-secondary"
+                      >
+                        Entrar
+                      </Link>
+                    )}
+                    {!isOnCadastro && (
+                      <Link
+                        href="/cadastro"
+                        onClick={() => setMobileOpen(false)}
+                        className="flex h-12 items-center justify-center rounded-xl bg-primary text-base font-semibold text-primary-foreground shadow-sm shadow-primary/20"
+                      >
+                        Cadastrar
+                      </Link>
+                    )}
                   </>
                 )}
               </div>

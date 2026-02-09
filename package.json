@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "preinstall": "node scripts/preinstall.js",
+    "preinstall": "node -e \"if(process.env.VERCEL==='1'){var fs=require('fs'),p='node_modules';try{var s=fs.statSync(p);if(!s.isDirectory()){fs.rmSync(p,{recursive:true,force:true});console.log('Cleaned corrupted node_modules')}}catch(e){}}\"",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

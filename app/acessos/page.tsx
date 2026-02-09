@@ -332,9 +332,20 @@ export default function AcessosPage() {
                   <Bike className="h-4 w-4" />
                   Motoboy
                 </h3>
-                <p className="text-xs text-muted-foreground">Cadastre um motoboy para testar</p>
-                <div className="mt-2 rounded bg-background/50 px-2 py-2 text-xs text-muted-foreground">
-                  Nenhum motoboy cadastrado ainda. <Link href="/cadastro" className="font-medium text-emerald-400 hover:underline">Cadastre aqui</Link> selecionando o perfil &quot;Motoboy&quot;.
+                <p className="text-xs text-muted-foreground">Email + Senha + PIN</p>
+                <div className="mt-2 space-y-1 text-xs">
+                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
+                    <span className="text-muted-foreground">diego@motoboy.com</span>
+                    <span className="font-mono text-emerald-400">123456</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
+                    <span className="text-muted-foreground">lucas@motoboy.com</span>
+                    <span className="font-mono text-emerald-400">123456</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
+                    <span className="text-muted-foreground">rafael@motoboy.com</span>
+                    <span className="font-mono text-emerald-400">123456</span>
+                  </div>
                 </div>
               </div>
             </div>

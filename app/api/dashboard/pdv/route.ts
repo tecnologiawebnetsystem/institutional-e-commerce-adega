@@ -184,6 +184,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     success: true,
+    orderId: order[0].id,
     orderNumber: order[0].order_number,
     total,
     change: changeAmount,

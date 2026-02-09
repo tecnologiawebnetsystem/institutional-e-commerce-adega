@@ -52,10 +52,10 @@ export default function PDVPage() {
   const [discountInput, setDiscountInput] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [showSuccess, setShowSuccess] = useState(false);
-  const [lastOrder, setLastOrder] = useState<{
-    orderNumber: string; total: number; paymentMethod: string;
-    change: number; items: { name: string; quantity: number; price: number; total: number }[];
-    customerName: string; customerCpf: string; date: string;
+ const [lastOrder, setLastOrder] = useState<{
+  orderId: string; orderNumber: string; total: number; paymentMethod: string;
+  change: number; items: { name: string; quantity: number; price: number; total: number }[];
+  customerName: string; customerCpf: string; date: string;
   } | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [scanMode, setScanMode] = useState<"barcode" | "search">("barcode");
@@ -340,6 +340,12 @@ export default function PDVPage() {
   /* -- Print receipt -------------------------------------- */
   function printReceipt() {
     if (!lastOrder) return;
+    // If we have orderId, use the server-rendered receipt (has real store info)
+    if (lastOrder.orderId) {
+      window.open(`/api/dashboard/pdv/receipt?orderId=${lastOrder.orderId}`, "_blank", "width=380,height=700");
+      return;
+    }
+    // Fallback: inline receipt
     const w = window.open("", "_blank", "width=350,height=600");
     if (!w) return;
     const lines = lastOrder.items.map(i => `
@@ -403,9 +409,9 @@ export default function PDVPage() {
       const res = await fetch("/api/dashboard/pdv", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const data = await res.json();
       if (data.success) {
-        setLastOrder({
-          orderNumber: data.orderNumber, total: data.total,
-          paymentMethod: isFiado ? "Fiado" : splitMode ? "Misto" : paymentMethod,
+ setLastOrder({
+  orderId: data.orderId, orderNumber: data.orderNumber, total: data.total,
+  paymentMethod: isFiado ? "Fiado" : splitMode ? "Misto" : paymentMethod,
           change: data.change || 0,
           items: cartItems.map(i => ({ name: i.name, quantity: i.quantity, price: i.price, total: i.price * i.quantity - (i.itemDiscount || 0) })),
           customerName, customerCpf,

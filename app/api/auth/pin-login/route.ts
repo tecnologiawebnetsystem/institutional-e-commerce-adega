@@ -11,14 +11,19 @@ function verifyPassword(password: string, stored: string): boolean {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, pin } = body;
+    const { email, cpf, pin } = body;
 
-    if (!email || !pin) {
-      return NextResponse.json({ error: "Email e PIN sao obrigatorios" }, { status: 400 });
+    if ((!email && !cpf) || !pin) {
+      return NextResponse.json({ error: "Email ou CPF e PIN sao obrigatorios" }, { status: 400 });
     }
 
     const sql = getDb();
-    const users = await sql`SELECT * FROM users WHERE email = ${email} AND role = 'owner'`;
+    let users;
+    if (email) {
+      users = await sql`SELECT * FROM users WHERE email = ${email} AND role = 'owner'`;
+    } else {
+      users = await sql`SELECT * FROM users WHERE cpf = ${cpf} AND role = 'owner'`;
+    }
 
     if (users.length === 0) {
       return NextResponse.json({ error: "Credenciais invalidas" }, { status: 401 });

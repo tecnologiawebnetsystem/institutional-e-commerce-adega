@@ -87,6 +87,7 @@ export default function AcessosPage() {
 
   // PIN-only form for PDV
   const [pdvEmail, setPdvEmail] = useState("");
+  const [pdvCpf, setPdvCpf] = useState("");
   const [pdvPin, setPdvPin] = useState(["", "", "", ""]);
   const pinRefs = [
     useRef<HTMLInputElement>(null),
@@ -96,6 +97,14 @@ export default function AcessosPage() {
   ];
 
   const selectedProfile = profiles.find((p) => p.id === selected);
+
+  function maskCpf(val: string) {
+    const digits = val.replace(/\D/g, "").slice(0, 11);
+    return digits
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  }
 
   // Focus first PIN input when PDV is selected
   useEffect(() => {
@@ -129,8 +138,8 @@ export default function AcessosPage() {
 
   async function handlePdvLogin(pinString?: string) {
     const pin = pinString || pdvPin.join("");
-    if (!pdvEmail || pin.length !== 4) {
-      toast.error("Preencha email e PIN de 4 digitos");
+    if ((!pdvEmail && !pdvCpf) || pin.length !== 4) {
+      toast.error("Preencha email ou CPF e o PIN de 4 digitos");
       return;
     }
     setLoading(true);
@@ -138,7 +147,7 @@ export default function AcessosPage() {
       const res = await fetch("/api/auth/pin-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: pdvEmail, pin }),
+        body: JSON.stringify({ email: pdvEmail || undefined, cpf: pdvCpf.replace(/\D/g, "") || undefined, pin }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -362,7 +371,7 @@ export default function AcessosPage() {
         /* ------- PDV QUICK LOGIN ------- */
         <div className="w-full max-w-md">
           <button
-            onClick={() => { setSelected(null); setPdvEmail(""); setPdvPin(["", "", "", ""]); }}
+            onClick={() => { setSelected(null); setPdvEmail(""); setPdvCpf(""); setPdvPin(["", "", "", ""]); }}
             className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -384,13 +393,33 @@ export default function AcessosPage() {
               <input
                 id="pdv-email"
                 type="email"
-                required
                 value={pdvEmail}
                 onChange={(e) => setPdvEmail(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter" && pdvEmail) pinRefs[0].current?.focus(); }}
                 className={inputClass}
                 placeholder="dono@adega.com"
                 autoFocus
+              />
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="h-px flex-1 bg-border" />
+              <span className="text-xs text-muted-foreground">ou</span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+
+            {/* Step 1b: CPF */}
+            <div>
+              <label htmlFor="pdv-cpf" className="mb-1.5 block text-sm font-medium text-foreground">CPF do dono da adega</label>
+              <input
+                id="pdv-cpf"
+                type="text"
+                inputMode="numeric"
+                value={pdvCpf}
+                onChange={(e) => setPdvCpf(maskCpf(e.target.value))}
+                onKeyDown={(e) => { if (e.key === "Enter" && pdvCpf.replace(/\D/g, "").length === 11) pinRefs[0].current?.focus(); }}
+                className={inputClass}
+                placeholder="000.000.000-00"
               />
             </div>
 
@@ -420,7 +449,7 @@ export default function AcessosPage() {
             <button
               type="button"
               onClick={() => handlePdvLogin()}
-              disabled={loading || pdvPin.join("").length !== 4 || !pdvEmail}
+              disabled={loading || pdvPin.join("").length !== 4 || (!pdvEmail && !pdvCpf)}
               className="flex h-11 items-center justify-center gap-2 rounded-lg bg-violet-600 text-sm font-semibold text-white transition-colors hover:bg-violet-700 disabled:opacity-50"
             >
               {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : (

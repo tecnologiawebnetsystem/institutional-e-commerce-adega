@@ -274,18 +274,31 @@ export default function AcessosPage() {
               <div className="rounded-lg border border-violet-500/20 bg-violet-500/5 p-4">
                 <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-violet-400">
                   <Monitor className="h-4 w-4" />
-                  PDV / Caixa
+                  PDV / Caixa (Acesso Rapido)
                 </h3>
-                <p className="text-xs text-muted-foreground">Email + PIN (4 digitos)</p>
-                <div className="mt-2 space-y-1 text-xs">
-                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
-                    <span className="text-muted-foreground">carlos@adega1.com</span>
-                    <span className="font-mono text-violet-400">PIN: 1234</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
-                    <span className="text-muted-foreground">fernanda@adega2.com</span>
-                    <span className="font-mono text-violet-400">PIN: 1234</span>
-                  </div>
+                <p className="text-xs text-muted-foreground">Email ou CPF + PIN</p>
+                <div className="mt-2 overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="text-left text-muted-foreground/70">
+                        <th className="pb-1 pr-2 font-medium">Email</th>
+                        <th className="pb-1 pr-2 font-medium">CPF</th>
+                        <th className="pb-1 font-medium">PIN</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-muted-foreground">
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">carlos@adega1.com</td>
+                        <td className="py-1 pr-2 font-mono text-violet-400">341.256.789-10</td>
+                        <td className="py-1 font-mono text-violet-400">1234</td>
+                      </tr>
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">fernanda@adega2.com</td>
+                        <td className="py-1 pr-2 font-mono text-violet-400">528.143.679-02</td>
+                        <td className="py-1 font-mono text-violet-400">1234</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
@@ -296,19 +309,37 @@ export default function AcessosPage() {
                   Dono de Adega
                 </h3>
                 <p className="text-xs text-muted-foreground">Email + Senha + PIN</p>
-                <div className="mt-2 space-y-1 text-xs">
-                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
-                    <span className="text-muted-foreground">carlos@adega1.com</span>
-                    <span className="font-mono text-primary">123456</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
-                    <span className="text-muted-foreground">fernanda@adega2.com</span>
-                    <span className="font-mono text-primary">123456</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
-                    <span className="text-muted-foreground">roberto@adega3.com</span>
-                    <span className="font-mono text-primary">123456</span>
-                  </div>
+                <div className="mt-2 overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="text-left text-muted-foreground/70">
+                        <th className="pb-1 pr-2 font-medium">Email</th>
+                        <th className="pb-1 pr-2 font-medium">CPF</th>
+                        <th className="pb-1 pr-2 font-medium">Senha</th>
+                        <th className="pb-1 font-medium">PIN</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-muted-foreground">
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">carlos@adega1.com</td>
+                        <td className="py-1 pr-2 font-mono text-primary">341.256.789-10</td>
+                        <td className="py-1 pr-2 font-mono text-primary">123456</td>
+                        <td className="py-1 font-mono text-primary">1234</td>
+                      </tr>
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">fernanda@adega2.com</td>
+                        <td className="py-1 pr-2 font-mono text-primary">528.143.679-02</td>
+                        <td className="py-1 pr-2 font-mono text-primary">123456</td>
+                        <td className="py-1 font-mono text-primary">1234</td>
+                      </tr>
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">roberto@adega3.com</td>
+                        <td className="py-1 pr-2 font-mono text-primary">673.412.985-33</td>
+                        <td className="py-1 pr-2 font-mono text-primary">123456</td>
+                        <td className="py-1 font-mono text-primary">1234</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
@@ -319,19 +350,37 @@ export default function AcessosPage() {
                   Cliente
                 </h3>
                 <p className="text-xs text-muted-foreground">Email + Senha + PIN</p>
-                <div className="mt-2 space-y-1 text-xs">
-                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
-                    <span className="text-muted-foreground">joao@email.com</span>
-                    <span className="font-mono text-blue-400">123456</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
-                    <span className="text-muted-foreground">maria@email.com</span>
-                    <span className="font-mono text-blue-400">123456</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
-                    <span className="text-muted-foreground">camila@email.com</span>
-                    <span className="font-mono text-blue-400">123456</span>
-                  </div>
+                <div className="mt-2 overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="text-left text-muted-foreground/70">
+                        <th className="pb-1 pr-2 font-medium">Email</th>
+                        <th className="pb-1 pr-2 font-medium">CPF</th>
+                        <th className="pb-1 pr-2 font-medium">Senha</th>
+                        <th className="pb-1 font-medium">PIN</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-muted-foreground">
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">joao@email.com</td>
+                        <td className="py-1 pr-2 font-mono text-blue-400">192.834.567-44</td>
+                        <td className="py-1 pr-2 font-mono text-blue-400">123456</td>
+                        <td className="py-1 font-mono text-blue-400">1234</td>
+                      </tr>
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">maria@email.com</td>
+                        <td className="py-1 pr-2 font-mono text-blue-400">456.789.012-55</td>
+                        <td className="py-1 pr-2 font-mono text-blue-400">123456</td>
+                        <td className="py-1 font-mono text-blue-400">1234</td>
+                      </tr>
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">camila@email.com</td>
+                        <td className="py-1 pr-2 font-mono text-blue-400">789.012.345-66</td>
+                        <td className="py-1 pr-2 font-mono text-blue-400">123456</td>
+                        <td className="py-1 font-mono text-blue-400">1234</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
@@ -342,19 +391,37 @@ export default function AcessosPage() {
                   Motoboy
                 </h3>
                 <p className="text-xs text-muted-foreground">Email + Senha + PIN</p>
-                <div className="mt-2 space-y-1 text-xs">
-                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
-                    <span className="text-muted-foreground">diego@motoboy.com</span>
-                    <span className="font-mono text-emerald-400">123456</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
-                    <span className="text-muted-foreground">lucas@motoboy.com</span>
-                    <span className="font-mono text-emerald-400">123456</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded bg-background/50 px-2 py-1">
-                    <span className="text-muted-foreground">rafael@motoboy.com</span>
-                    <span className="font-mono text-emerald-400">123456</span>
-                  </div>
+                <div className="mt-2 overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="text-left text-muted-foreground/70">
+                        <th className="pb-1 pr-2 font-medium">Email</th>
+                        <th className="pb-1 pr-2 font-medium">CPF</th>
+                        <th className="pb-1 pr-2 font-medium">Senha</th>
+                        <th className="pb-1 font-medium">PIN</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-muted-foreground">
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">diego@motoboy.com</td>
+                        <td className="py-1 pr-2 font-mono text-emerald-400">123.456.789-01</td>
+                        <td className="py-1 pr-2 font-mono text-emerald-400">123456</td>
+                        <td className="py-1 font-mono text-emerald-400">1234</td>
+                      </tr>
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">lucas@motoboy.com</td>
+                        <td className="py-1 pr-2 font-mono text-emerald-400">987.654.321-00</td>
+                        <td className="py-1 pr-2 font-mono text-emerald-400">123456</td>
+                        <td className="py-1 font-mono text-emerald-400">1234</td>
+                      </tr>
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">rafael@motoboy.com</td>
+                        <td className="py-1 pr-2 font-mono text-emerald-400">456.789.123-02</td>
+                        <td className="py-1 pr-2 font-mono text-emerald-400">123456</td>
+                        <td className="py-1 font-mono text-emerald-400">1234</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>

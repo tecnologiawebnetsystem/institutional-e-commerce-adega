@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -17,6 +17,7 @@ import {
   Monitor,
 } from "lucide-react";
 import { toast } from "sonner";
+import PinPad from "@/components/pin-pad";
 
 type ProfileId = "customer" | "owner" | "motoboy" | "admin" | "pdv";
 
@@ -87,50 +88,21 @@ export default function AcessosPage() {
 
   // PIN-only form for PDV
   const [pdvEmail, setPdvEmail] = useState("");
-  const [pdvPin, setPdvPin] = useState(["", "", "", ""]);
-  const pinRefs = [
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-  ];
+  const [pdvCpf, setPdvCpf] = useState("");
 
   const selectedProfile = profiles.find((p) => p.id === selected);
 
-  // Focus first PIN input when PDV is selected
-  useEffect(() => {
-    if (selected === "pdv" && pdvEmail) {
-      pinRefs[0].current?.focus();
-    }
-  }, [selected, pdvEmail]);
-
-  function handlePinChange(index: number, value: string) {
-    if (!/^\d?$/.test(value)) return;
-    const newPin = [...pdvPin];
-    newPin[index] = value;
-    setPdvPin(newPin);
-
-    // Auto-focus next
-    if (value && index < 3) {
-      pinRefs[index + 1].current?.focus();
-    }
-
-    // Auto-submit when all 4 digits are entered
-    if (value && index === 3 && newPin.every((d) => d !== "")) {
-      handlePdvLogin(newPin.join(""));
-    }
+  function maskCpf(val: string) {
+    const digits = val.replace(/\D/g, "").slice(0, 11);
+    return digits
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
   }
 
-  function handlePinKeyDown(index: number, key: string) {
-    if (key === "Backspace" && !pdvPin[index] && index > 0) {
-      pinRefs[index - 1].current?.focus();
-    }
-  }
-
-  async function handlePdvLogin(pinString?: string) {
-    const pin = pinString || pdvPin.join("");
-    if (!pdvEmail || pin.length !== 4) {
-      toast.error("Preencha email e PIN de 4 digitos");
+  async function handlePdvLogin(pin: string) {
+    if ((!pdvEmail && !pdvCpf) || pin.length !== 4) {
+      toast.error("Preencha email ou CPF e o PIN de 4 digitos");
       return;
     }
     setLoading(true);
@@ -138,13 +110,11 @@ export default function AcessosPage() {
       const res = await fetch("/api/auth/pin-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: pdvEmail, pin }),
+        body: JSON.stringify({ email: pdvEmail || undefined, cpf: pdvCpf.replace(/\D/g, "") || undefined, pin }),
       });
       const data = await res.json();
       if (!res.ok) {
         toast.error(data.error || "Erro ao fazer login");
-        setPdvPin(["", "", "", ""]);
-        pinRefs[0].current?.focus();
         setLoading(false);
         return;
       }
@@ -157,16 +127,20 @@ export default function AcessosPage() {
     }
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSubmit(pinFromPad?: string) {
     if (!selectedProfile) return;
+    const pinToUse = pinFromPad || form.pin;
+    if (!form.email || !form.password || !pinToUse) {
+      toast.error("Preencha email, senha e digite o PIN");
+      return;
+    }
     setLoading(true);
 
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, pin: pinToUse }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -250,6 +224,174 @@ export default function AcessosPage() {
             ))}
           </div>
 
+          {/* Credentials info */}
+          <div className="mt-8 w-full rounded-xl border border-border bg-card p-6">
+            <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-foreground">
+              <ShieldCheck className="h-5 w-5 text-amber-400" />
+              Credenciais de Demonstracao
+            </h2>
+            <p className="mb-4 text-xs text-muted-foreground">
+              Todos os usuarios usam <strong className="text-foreground">Senha: 123456</strong> e <strong className="text-foreground">PIN: 1234</strong>
+            </p>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {/* PDV */}
+              <div className="rounded-lg border border-violet-500/20 bg-violet-500/5 p-4">
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-violet-400">
+                  <Monitor className="h-4 w-4" />
+                  PDV / Caixa (Acesso Rapido)
+                </h3>
+                <p className="text-xs text-muted-foreground">Email ou CPF + PIN</p>
+                <div className="mt-2 overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="text-left text-muted-foreground/70">
+                        <th className="pb-1 pr-2 font-medium">Email</th>
+                        <th className="pb-1 pr-2 font-medium">CPF</th>
+                        <th className="pb-1 font-medium">PIN</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-muted-foreground">
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">carlos@adega1.com</td>
+                        <td className="py-1 pr-2 font-mono text-violet-400">341.256.789-10</td>
+                        <td className="py-1 font-mono text-violet-400">1234</td>
+                      </tr>
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">fernanda@adega2.com</td>
+                        <td className="py-1 pr-2 font-mono text-violet-400">528.143.679-02</td>
+                        <td className="py-1 font-mono text-violet-400">1234</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Owner */}
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-primary">
+                  <Store className="h-4 w-4" />
+                  Dono de Adega
+                </h3>
+                <p className="text-xs text-muted-foreground">Email + Senha + PIN</p>
+                <div className="mt-2 overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="text-left text-muted-foreground/70">
+                        <th className="pb-1 pr-2 font-medium">Email</th>
+                        <th className="pb-1 pr-2 font-medium">CPF</th>
+                        <th className="pb-1 pr-2 font-medium">Senha</th>
+                        <th className="pb-1 font-medium">PIN</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-muted-foreground">
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">carlos@adega1.com</td>
+                        <td className="py-1 pr-2 font-mono text-primary">341.256.789-10</td>
+                        <td className="py-1 pr-2 font-mono text-primary">123456</td>
+                        <td className="py-1 font-mono text-primary">1234</td>
+                      </tr>
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">fernanda@adega2.com</td>
+                        <td className="py-1 pr-2 font-mono text-primary">528.143.679-02</td>
+                        <td className="py-1 pr-2 font-mono text-primary">123456</td>
+                        <td className="py-1 font-mono text-primary">1234</td>
+                      </tr>
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">roberto@adega3.com</td>
+                        <td className="py-1 pr-2 font-mono text-primary">673.412.985-33</td>
+                        <td className="py-1 pr-2 font-mono text-primary">123456</td>
+                        <td className="py-1 font-mono text-primary">1234</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Customer */}
+              <div className="rounded-lg border border-blue-500/20 bg-blue-500/5 p-4">
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-blue-400">
+                  <User className="h-4 w-4" />
+                  Cliente
+                </h3>
+                <p className="text-xs text-muted-foreground">Email + Senha + PIN</p>
+                <div className="mt-2 overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="text-left text-muted-foreground/70">
+                        <th className="pb-1 pr-2 font-medium">Email</th>
+                        <th className="pb-1 pr-2 font-medium">CPF</th>
+                        <th className="pb-1 pr-2 font-medium">Senha</th>
+                        <th className="pb-1 font-medium">PIN</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-muted-foreground">
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">joao@email.com</td>
+                        <td className="py-1 pr-2 font-mono text-blue-400">192.834.567-44</td>
+                        <td className="py-1 pr-2 font-mono text-blue-400">123456</td>
+                        <td className="py-1 font-mono text-blue-400">1234</td>
+                      </tr>
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">maria@email.com</td>
+                        <td className="py-1 pr-2 font-mono text-blue-400">456.789.012-55</td>
+                        <td className="py-1 pr-2 font-mono text-blue-400">123456</td>
+                        <td className="py-1 font-mono text-blue-400">1234</td>
+                      </tr>
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">camila@email.com</td>
+                        <td className="py-1 pr-2 font-mono text-blue-400">789.012.345-66</td>
+                        <td className="py-1 pr-2 font-mono text-blue-400">123456</td>
+                        <td className="py-1 font-mono text-blue-400">1234</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Motoboy */}
+              <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-4">
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-emerald-400">
+                  <Bike className="h-4 w-4" />
+                  Motoboy
+                </h3>
+                <p className="text-xs text-muted-foreground">Email + Senha + PIN</p>
+                <div className="mt-2 overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="text-left text-muted-foreground/70">
+                        <th className="pb-1 pr-2 font-medium">Email</th>
+                        <th className="pb-1 pr-2 font-medium">CPF</th>
+                        <th className="pb-1 pr-2 font-medium">Senha</th>
+                        <th className="pb-1 font-medium">PIN</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-muted-foreground">
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">diego@motoboy.com</td>
+                        <td className="py-1 pr-2 font-mono text-emerald-400">123.456.789-01</td>
+                        <td className="py-1 pr-2 font-mono text-emerald-400">123456</td>
+                        <td className="py-1 font-mono text-emerald-400">1234</td>
+                      </tr>
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">lucas@motoboy.com</td>
+                        <td className="py-1 pr-2 font-mono text-emerald-400">987.654.321-00</td>
+                        <td className="py-1 pr-2 font-mono text-emerald-400">123456</td>
+                        <td className="py-1 font-mono text-emerald-400">1234</td>
+                      </tr>
+                      <tr className="border-t border-border/30">
+                        <td className="py-1 pr-2">rafael@motoboy.com</td>
+                        <td className="py-1 pr-2 font-mono text-emerald-400">456.789.123-02</td>
+                        <td className="py-1 pr-2 font-mono text-emerald-400">123456</td>
+                        <td className="py-1 font-mono text-emerald-400">1234</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="mt-8 text-center">
             <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
               <ArrowLeft className="h-4 w-4" />
@@ -261,7 +403,7 @@ export default function AcessosPage() {
         /* ------- PDV QUICK LOGIN ------- */
         <div className="w-full max-w-md">
           <button
-            onClick={() => { setSelected(null); setPdvEmail(""); setPdvPin(["", "", "", ""]); }}
+            onClick={() => { setSelected(null); setPdvEmail(""); setPdvCpf(""); }}
             className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -273,7 +415,7 @@ export default function AcessosPage() {
               <Monitor className="h-8 w-8 text-violet-400" />
             </div>
             <h1 className="text-xl font-bold text-foreground">PDV / Caixa</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Login rapido com email + PIN</p>
+            <p className="mt-1 text-sm text-muted-foreground">Login rapido com email ou CPF + PIN</p>
           </div>
 
           <div className="flex flex-col gap-5 rounded-xl border border-border bg-card p-6">
@@ -283,7 +425,6 @@ export default function AcessosPage() {
               <input
                 id="pdv-email"
                 type="email"
-                required
                 value={pdvEmail}
                 onChange={(e) => setPdvEmail(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter" && pdvEmail) pinRefs[0].current?.focus(); }}
@@ -293,42 +434,41 @@ export default function AcessosPage() {
               />
             </div>
 
-            {/* Step 2: PIN */}
-            <div>
-              <label className="mb-3 block text-sm font-medium text-foreground">PIN de 4 digitos</label>
-              <div className="flex items-center justify-center gap-3">
-                {pdvPin.map((digit, i) => (
-                  <input
-                    key={i}
-                    ref={pinRefs[i]}
-                    type="password"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handlePinChange(i, e.target.value)}
-                    onKeyDown={(e) => handlePinKeyDown(i, e.key)}
-                    className="flex h-14 w-14 items-center justify-center rounded-xl border-2 border-input bg-secondary text-center text-2xl font-bold text-foreground transition-colors focus:border-violet-500 focus:ring-2 focus:ring-violet-500/30"
-                  />
-                ))}
-              </div>
-              <p className="mt-3 text-center text-xs text-muted-foreground">
-                Digite os 4 digitos do PIN para entrar automaticamente
-              </p>
+            <div className="flex items-center gap-3">
+              <div className="h-px flex-1 bg-border" />
+              <span className="text-xs text-muted-foreground">ou</span>
+              <div className="h-px flex-1 bg-border" />
             </div>
 
-            <button
-              type="button"
-              onClick={() => handlePdvLogin()}
-              disabled={loading || pdvPin.join("").length !== 4 || !pdvEmail}
-              className="flex h-11 items-center justify-center gap-2 rounded-lg bg-violet-600 text-sm font-semibold text-white transition-colors hover:bg-violet-700 disabled:opacity-50"
-            >
-              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : (
-                <>
-                  <Monitor className="h-4 w-4" />
-                  Entrar no PDV
-                </>
-              )}
-            </button>
+            {/* Step 1b: CPF */}
+            <div>
+              <label htmlFor="pdv-cpf" className="mb-1.5 block text-sm font-medium text-foreground">CPF do dono da adega</label>
+              <input
+                id="pdv-cpf"
+                type="text"
+                inputMode="numeric"
+                value={pdvCpf}
+                onChange={(e) => setPdvCpf(maskCpf(e.target.value))}
+                onKeyDown={(e) => { if (e.key === "Enter" && pdvCpf.replace(/\D/g, "").length === 11) pinRefs[0].current?.focus(); }}
+                className={inputClass}
+                placeholder="000.000.000-00"
+              />
+            </div>
+
+            {/* Step 2: PIN Pad */}
+            <PinPad
+              onComplete={(pin) => handlePdvLogin(pin)}
+              accentColor="bg-violet-500"
+              disabled={loading || (!pdvEmail && !pdvCpf)}
+              label="PIN de 4 digitos"
+            />
+
+            {loading && (
+              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Entrando no PDV...
+              </div>
+            )}
           </div>
 
           <p className="mt-5 text-center text-xs text-muted-foreground">
@@ -358,7 +498,7 @@ export default function AcessosPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6">
+          <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6">
             <div>
               <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-foreground">Email</label>
               <input id="email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputClass} placeholder="seu@email.com" autoFocus />
@@ -372,14 +512,20 @@ export default function AcessosPage() {
                 </button>
               </div>
             </div>
-            <div>
-              <label htmlFor="pin" className="mb-1.5 block text-sm font-medium text-foreground">PIN numerico</label>
-              <input id="pin" type="password" inputMode="numeric" pattern="[0-9]*" maxLength={6} required value={form.pin} onChange={(e) => setForm({ ...form, pin: e.target.value.replace(/\D/g, "") })} className={`${inputClass} text-center tracking-[0.5em]`} placeholder="0 0 0 0" />
-            </div>
-            <button type="submit" disabled={loading} className="mt-2 flex h-11 items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50">
-              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : (<><LogIn className="h-4 w-4" />Entrar</>)}
-            </button>
-          </form>
+
+            <PinPad
+              onComplete={(pin) => handleSubmit(pin)}
+              accentColor={selectedProfile?.id === "motoboy" ? "bg-emerald-500" : selectedProfile?.id === "customer" ? "bg-blue-500" : "bg-primary"}
+              disabled={loading || !form.email || !form.password}
+            />
+
+            {loading && (
+              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Entrando...
+              </div>
+            )}
+          </div>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Nao tem uma conta?{" "}

@@ -18,6 +18,7 @@ import {
   X,
   ReceiptText,
   MessageCircle,
+  QrCode,
 } from "lucide-react";
 
 const navItems = [
@@ -32,6 +33,7 @@ const navItems = [
   { href: "/dashboard/promocoes", label: "Promocoes", icon: Tag },
   { href: "/dashboard/cupons", label: "Cupons", icon: Ticket },
   { href: "/dashboard/financeiro", label: "Financeiro", icon: CreditCard },
+  { href: "/dashboard/pix", label: "PIX / QR Code", icon: QrCode },
 ];
 
 export function DashboardSidebar({

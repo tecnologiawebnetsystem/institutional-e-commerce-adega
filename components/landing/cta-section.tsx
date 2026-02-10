@@ -15,7 +15,7 @@ export function CtaSection() {
               width: "700px",
               height: "400px",
               background:
-                "radial-gradient(ellipse at center, oklch(0.65 0.22 30 / 0.12) 0%, transparent 70%)",
+                "radial-gradient(ellipse at center, oklch(0.79 0.09 75 / 0.12) 0%, transparent 70%)",
             }}
           />
           <div
@@ -24,7 +24,7 @@ export function CtaSection() {
               width: "400px",
               height: "300px",
               background:
-                "radial-gradient(ellipse at center, oklch(0.55 0.2 15 / 0.08) 0%, transparent 70%)",
+                "radial-gradient(ellipse at center, oklch(0.70 0.08 75 / 0.08) 0%, transparent 70%)",
             }}
           />
 

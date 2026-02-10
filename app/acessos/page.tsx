@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -17,6 +17,7 @@ import {
   Monitor,
 } from "lucide-react";
 import { toast } from "sonner";
+import PinPad from "@/components/pin-pad";
 
 type ProfileId = "customer" | "owner" | "motoboy" | "admin" | "pdv";
 
@@ -88,13 +89,6 @@ export default function AcessosPage() {
   // PIN-only form for PDV
   const [pdvEmail, setPdvEmail] = useState("");
   const [pdvCpf, setPdvCpf] = useState("");
-  const [pdvPin, setPdvPin] = useState(["", "", "", ""]);
-  const pinRefs = [
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-  ];
 
   const selectedProfile = profiles.find((p) => p.id === selected);
 
@@ -106,38 +100,7 @@ export default function AcessosPage() {
       .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
   }
 
-  // Focus first PIN input when PDV is selected
-  useEffect(() => {
-    if (selected === "pdv" && pdvEmail) {
-      pinRefs[0].current?.focus();
-    }
-  }, [selected, pdvEmail]);
-
-  function handlePinChange(index: number, value: string) {
-    if (!/^\d?$/.test(value)) return;
-    const newPin = [...pdvPin];
-    newPin[index] = value;
-    setPdvPin(newPin);
-
-    // Auto-focus next
-    if (value && index < 3) {
-      pinRefs[index + 1].current?.focus();
-    }
-
-    // Auto-submit when all 4 digits are entered
-    if (value && index === 3 && newPin.every((d) => d !== "")) {
-      handlePdvLogin(newPin.join(""));
-    }
-  }
-
-  function handlePinKeyDown(index: number, key: string) {
-    if (key === "Backspace" && !pdvPin[index] && index > 0) {
-      pinRefs[index - 1].current?.focus();
-    }
-  }
-
-  async function handlePdvLogin(pinString?: string) {
-    const pin = pinString || pdvPin.join("");
+  async function handlePdvLogin(pin: string) {
     if ((!pdvEmail && !pdvCpf) || pin.length !== 4) {
       toast.error("Preencha email ou CPF e o PIN de 4 digitos");
       return;
@@ -152,8 +115,6 @@ export default function AcessosPage() {
       const data = await res.json();
       if (!res.ok) {
         toast.error(data.error || "Erro ao fazer login");
-        setPdvPin(["", "", "", ""]);
-        pinRefs[0].current?.focus();
         setLoading(false);
         return;
       }
@@ -166,16 +127,20 @@ export default function AcessosPage() {
     }
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSubmit(pinFromPad?: string) {
     if (!selectedProfile) return;
+    const pinToUse = pinFromPad || form.pin;
+    if (!form.email || !form.password || !pinToUse) {
+      toast.error("Preencha email, senha e digite o PIN");
+      return;
+    }
     setLoading(true);
 
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, pin: pinToUse }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -438,7 +403,7 @@ export default function AcessosPage() {
         /* ------- PDV QUICK LOGIN ------- */
         <div className="w-full max-w-md">
           <button
-            onClick={() => { setSelected(null); setPdvEmail(""); setPdvCpf(""); setPdvPin(["", "", "", ""]); }}
+            onClick={() => { setSelected(null); setPdvEmail(""); setPdvCpf(""); }}
             className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -490,42 +455,20 @@ export default function AcessosPage() {
               />
             </div>
 
-            {/* Step 2: PIN */}
-            <div>
-              <label className="mb-3 block text-sm font-medium text-foreground">PIN de 4 digitos</label>
-              <div className="flex items-center justify-center gap-3">
-                {pdvPin.map((digit, i) => (
-                  <input
-                    key={i}
-                    ref={pinRefs[i]}
-                    type="password"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handlePinChange(i, e.target.value)}
-                    onKeyDown={(e) => handlePinKeyDown(i, e.key)}
-                    className="flex h-14 w-14 items-center justify-center rounded-xl border-2 border-input bg-secondary text-center text-2xl font-bold text-foreground transition-colors focus:border-violet-500 focus:ring-2 focus:ring-violet-500/30"
-                  />
-                ))}
-              </div>
-              <p className="mt-3 text-center text-xs text-muted-foreground">
-                Digite os 4 digitos do PIN para entrar automaticamente
-              </p>
-            </div>
+            {/* Step 2: PIN Pad */}
+            <PinPad
+              onComplete={(pin) => handlePdvLogin(pin)}
+              accentColor="bg-violet-500"
+              disabled={loading || (!pdvEmail && !pdvCpf)}
+              label="PIN de 4 digitos"
+            />
 
-            <button
-              type="button"
-              onClick={() => handlePdvLogin()}
-              disabled={loading || pdvPin.join("").length !== 4 || (!pdvEmail && !pdvCpf)}
-              className="flex h-11 items-center justify-center gap-2 rounded-lg bg-violet-600 text-sm font-semibold text-white transition-colors hover:bg-violet-700 disabled:opacity-50"
-            >
-              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : (
-                <>
-                  <Monitor className="h-4 w-4" />
-                  Entrar no PDV
-                </>
-              )}
-            </button>
+            {loading && (
+              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Entrando no PDV...
+              </div>
+            )}
           </div>
 
           <p className="mt-5 text-center text-xs text-muted-foreground">
@@ -555,7 +498,7 @@ export default function AcessosPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6">
+          <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6">
             <div>
               <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-foreground">Email</label>
               <input id="email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputClass} placeholder="seu@email.com" autoFocus />
@@ -569,14 +512,20 @@ export default function AcessosPage() {
                 </button>
               </div>
             </div>
-            <div>
-              <label htmlFor="pin" className="mb-1.5 block text-sm font-medium text-foreground">PIN numerico</label>
-              <input id="pin" type="password" inputMode="numeric" pattern="[0-9]*" maxLength={6} required value={form.pin} onChange={(e) => setForm({ ...form, pin: e.target.value.replace(/\D/g, "") })} className={`${inputClass} text-center tracking-[0.5em]`} placeholder="0 0 0 0" />
-            </div>
-            <button type="submit" disabled={loading} className="mt-2 flex h-11 items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50">
-              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : (<><LogIn className="h-4 w-4" />Entrar</>)}
-            </button>
-          </form>
+
+            <PinPad
+              onComplete={(pin) => handleSubmit(pin)}
+              accentColor={selectedProfile?.id === "motoboy" ? "bg-emerald-500" : selectedProfile?.id === "customer" ? "bg-blue-500" : "bg-primary"}
+              disabled={loading || !form.email || !form.password}
+            />
+
+            {loading && (
+              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Entrando...
+              </div>
+            )}
+          </div>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Nao tem uma conta?{" "}

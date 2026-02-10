@@ -383,7 +383,7 @@ export default function AcessosPage() {
               <Monitor className="h-8 w-8 text-violet-400" />
             </div>
             <h1 className="text-xl font-bold text-foreground">PDV / Caixa</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Login rapido com email + PIN</p>
+            <p className="mt-1 text-sm text-muted-foreground">Login rapido com email ou CPF + PIN</p>
           </div>
 
           <div className="flex flex-col gap-5 rounded-xl border border-border bg-card p-6">

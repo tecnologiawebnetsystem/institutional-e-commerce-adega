@@ -58,6 +58,9 @@ export default function PDVPage() {
   customerName: string; customerCpf: string; date: string;
   } | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [pixPayload, setPixPayload] = useState("");
+  const [pixGenerating, setPixGenerating] = useState(false);
+  const pixCanvasRef = useRef<HTMLCanvasElement>(null);
   const [scanMode, setScanMode] = useState<"barcode" | "search">("barcode");
   const [lastScanned, setLastScanned] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
@@ -1019,7 +1022,33 @@ export default function PDVPage() {
                     { key: "credito", label: "Credito", icon: CreditCard },
                     { key: "pix", label: "PIX", icon: QrCode },
                   ].map((method) => (
-                    <button key={method.key} onClick={() => { setPaymentMethod(method.key); if (method.key === "dinheiro") setShowChangeCalc(true); else setShowChangeCalc(false); }}
+                    <button key={method.key} onClick={async () => {
+                      setPaymentMethod(method.key);
+                      if (method.key === "dinheiro") setShowChangeCalc(true); else setShowChangeCalc(false);
+                      if (method.key === "pix" && total > 0) {
+                        setPixGenerating(true);
+                        try {
+                          const res = await fetch("/api/dashboard/pix/qrcode", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ amount: total, txId: `PDV${Date.now()}` }),
+                          });
+                          const json = await res.json();
+                          if (res.ok && json.payload) {
+                            setPixPayload(json.payload);
+                            setTimeout(async () => {
+                              const QRCode = (await import("qrcode")).default;
+                              if (pixCanvasRef.current) {
+                                QRCode.toCanvas(pixCanvasRef.current, json.payload, { width: 200, margin: 2, color: { dark: "#000000", light: "#ffffff" } });
+                              }
+                            }, 100);
+                          } else {
+                            setPixPayload("");
+                          }
+                        } catch { setPixPayload(""); }
+                        finally { setPixGenerating(false); }
+                      } else { setPixPayload(""); }
+                    }}
                       className={`flex flex-col items-center gap-1 rounded-lg border py-2 text-[11px] font-medium transition-all ${paymentMethod === method.key ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"}`}>
                       <method.icon className="h-4 w-4" />{method.label}
                     </button>
@@ -1038,6 +1067,26 @@ export default function PDVPage() {
                     )}
                     {cashReceived && parseFloat(cashReceived) < total && (
                       <p className="text-center text-xs font-medium text-destructive">Valor insuficiente</p>
+                    )}
+                  </div>
+                )}
+                {paymentMethod === "pix" && (
+                  <div className="mt-2 rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3">
+                    {pixGenerating ? (
+                      <p className="text-center text-xs text-muted-foreground">Gerando QR Code...</p>
+                    ) : pixPayload ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <p className="text-xs font-medium text-emerald-400">QR Code PIX - {fmt(total)}</p>
+                        <div className="rounded-lg bg-white p-2"><canvas ref={pixCanvasRef} /></div>
+                        <button type="button" onClick={() => { navigator.clipboard.writeText(pixPayload); toast.success("Codigo PIX copiado!"); }}
+                          className="flex items-center gap-1 text-xs font-medium text-emerald-400 hover:underline">
+                          Copiar codigo PIX
+                        </button>
+                      </div>
+                    ) : (
+                      <p className="text-center text-xs text-muted-foreground">
+                        Cadastre a chave PIX em <a href="/dashboard/pix" className="font-medium text-primary hover:underline">Configuracoes PIX</a> para gerar QR Code automatico.
+                      </p>
                     )}
                   </div>
                 )}

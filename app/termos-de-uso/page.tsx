@@ -148,9 +148,10 @@ export default function TermosDeUsoPage() {
           <h2 className="mb-3 text-xl font-semibold text-foreground">10. Pagamentos e Cancelamentos</h2>
           <ul className="list-inside list-disc space-y-2 pl-2">
             <li>
-              Os pagamentos sao processados diretamente entre cliente e adega, podendo utilizar
-              dinheiro, cartao de debito/credito ou PIX. A AdegaExpress nao cobra nenhuma taxa,
-              comissao ou porcentagem sobre as vendas realizadas na plataforma.
+              Os pagamentos sao processados diretamente entre cliente e adega nas modalidades:
+              cartao de debito, cartao de credito e PIX. O dono da adega pode cadastrar sua chave
+              PIX na plataforma para gerar QR Codes de cobranca diretamente pelo PDV. A AdegaExpress
+              nao cobra nenhuma taxa, comissao ou porcentagem sobre as vendas realizadas na plataforma.
             </li>
             <li>
               Cancelamentos devem ser solicitados antes do envio do pedido. Apos o envio, fica
